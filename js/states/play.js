@@ -20,7 +20,7 @@ Play.prototype = {
         //adding physics
         game.physics.startSystem(Phaser.Physics.ARCADE);
         
-        //changin background color (while testing the light only)
+        //changin background color
 		game.stage.backgroundColor = "#000000";
         
         //adding player
@@ -38,26 +38,17 @@ Play.prototype = {
 		this.monsterSound[1] = game.add.audio("monsterR");
         
         //adding some walls to test ray tracing
-		this.walls = this.game.add.group();
+		this.walls = game.add.group();
 		this.walls.enableBody = true;
 		var i, x, y, tmp;
 		for (i = 0; i < 4; i++) {
-			x = i * this.game.width / 4 + 50;
-			y = this.game.rnd.integerInRange(50, this.game.height - 200);
+			x = i * game.width / 4 + 50;
+			y = game.rnd.integerInRange(50, game.height - 200);
 			tmp = this.walls.create(x, y, "p1");
 			tmp.scale.setTo(3, 3);
 			tmp.body.immovable = true;
 			tmp.tint = 0x000000;
 		}
-		//Create a bitmap texture for drawing light cones
-		this.bitmap = this.game.add.bitmapData(this.game.width, this.game.height);
-		this.bitmap.context.fillStyle = 'rgb(255, 255, 255)';
-		this.bitmap.context.strokeStyle = 'rgb(255, 255, 255)';
-		var lightBitmap = this.game.add.image(0, 0, this.bitmap);
-
-		//adding blend mode to bitmap (requires webgl on the browser)
-		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
-		
 		
 		//statue puzzle
 		game.camera.follow(this.player, 0, 0.5, 0.5);
@@ -81,6 +72,18 @@ Play.prototype = {
 		statue.enableBody = true;
 		statue.body.immovable = true;
 		statue.scale.setTo(1.5, 1);
+
+		//Create a bitmap texture for drawing light cones
+		//this should go at the bottom to cover all srpites 
+		//that will be in darkness
+		//console.log(game.world.width, game.world.height);
+		this.bitmap = game.add.bitmapData(game.world.width, game.world.height);
+		this.bitmap.context.fillStyle = 'rgb(255, 255, 255)';
+		this.bitmap.context.strokeStyle = 'rgb(255, 255, 255)';
+		var lightBitmap = game.add.image(0, 0, this.bitmap);
+
+		//adding blend mode to bitmap (requires webgl on the browser)
+		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
 			
 	},
 	collectkey1: function() {
@@ -158,20 +161,7 @@ Play.prototype = {
 	rayCast: function () {
 	    //fill the entire light bitmap with a dark shadow color.
 		this.bitmap.context.fillStyle = 'rgb(0, 0, 0)';
-		this.bitmap.context.fillRect(0, 0, this.wallsLayer.widthInPixels, this.wallsLayer.heightInPixels);
-	    
-	    //var gradient = this.bitmap.context.createRadialGradient(
-        //    this.player.x, this.player.y, this.LIGHT_RANGE * 0.75,
-        //    this.player.x, this.player.y, this.LIGHT_RANGE);
-        //gradient.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
-        //gradient.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
-
-        //this.bitmap.context.beginPath();
-        //this.bitmap.context.fillStyle = gradient;
-        //this.bitmap.context.arc(this.game.input.activePointer.x, this.game.input.activePointer.y,
-        //this.LIGHT_RANGE, 0, Math.PI*2);
-        //this.bitmap.context.fill();
-
+		this.bitmap.context.fillRect(game.camera.x, game.camera.y, game.camera.width, game.camera.height);
 		// Ray casting!
 		// Cast rays at intervals in a large circle around the light.
 		// Save all of the intersection points or ray end points if there was no intersection.
@@ -190,7 +180,6 @@ Play.prototype = {
 				points.push(ray.end);
 			}
 		}
-
 		// Connect the dots and fill in the shape, which are cones of light,
 		// with a bright white color. When multiplied with the background,
 		// the white color will allow the full color of the background to
@@ -234,7 +223,7 @@ Play.prototype = {
 				if (intersect) {
 					// Find the closest intersection
 					distance =
-						this.game.math.distance(ray.start.x, ray.start.y, intersect.x, intersect.y);
+						game.math.distance(ray.start.x, ray.start.y, intersect.x, intersect.y);
 					if (distance < distanceToWall) {
 						distanceToWall = distance;
 						closestIntersection = intersect;
