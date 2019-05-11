@@ -3,7 +3,7 @@
 var Play = function(game) {
     this.MAX_VELOCITY = 300;
     this.LIGHT_RANGE = 200;
-	this.EAR_RANGE = 280;
+	this.EAR_RANGE = 320;
 	this.inHearingRange = false;
 	this.monsterSound = [];
 };
