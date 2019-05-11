@@ -3,7 +3,8 @@
 var Play = function(game) {
     this.MAX_VELOCITY = 300;
     this.LIGHT_RANGE = 200;
-    this.EAR_RANGE = 280;
+	this.EAR_RANGE = 280;
+	this.inHearingRange = false;
 	this.monsterSound = [];
 };
 Play.prototype = {
@@ -234,19 +235,25 @@ Play.prototype = {
 		return closestIntersection;
 	},
 	playMonsterSound: function () {
-		var xDistance;
-
-		xDistance = this.player.x - this.monster.x;
+		var xDistance = this.player.x - this.monster.x;
+		var volumePrcnt;
 		xDistance = (xDistance < 0) ? -xDistance : xDistance; //abs value
 
-		if (xDistance < this.EAR_RANGE) { //in the range of listening
+		//Takes care of panning
+		if (isInRange(this.player.position, this.monster.position, this.EAR_RANGE)) {
+			//volumePrcnt = this.adjustMonsterVolumePrcnt();
+
 			if (this.player.x > this.monster.x) {
-				this.monsterSound[0].volume = 1;
 				this.monsterSound[1].volume = (this.EAR_RANGE - xDistance) / this.EAR_RANGE;
+				volumePrcnt = this.getVolPrcnt(getDistanceBetween2Points(this.player.position, this.monster.position));
+				this.monsterSound[1].volume = this.monsterSound[1].volume * volumePrcnt;
+				this.monsterSound[0].volume = 1 * volumePrcnt;
 			}
 			else {
 				this.monsterSound[0].volume = (this.EAR_RANGE - xDistance) / this.EAR_RANGE;
-				this.monsterSound[1].volume = 1;
+				volumePrcnt = this.getVolPrcnt(getDistanceBetween2Points(this.player.position, this.monster.position));
+				this.monsterSound[0].volume = this.monsterSound[0].volume * volumePrcnt;
+				this.monsterSound[1].volume = 1 * volumePrcnt;
 			}
 			if (!this.monsterSound[0].isPlaying) {
 				this.monsterSound[0].play('', 0, this.monsterSound[0].volume, true);
@@ -259,5 +266,9 @@ Play.prototype = {
 			this.monsterSound[0].stop();
 			this.monsterSound[1].stop();
 		}
+	},
+	getVolPrcnt: function(distance) {
+		var compPrcnt = (distance * 100 / 320) / 100;
+		return (1 - compPrcnt < 0)? 0 : 1 - compPrcnt;
 	}
 };
