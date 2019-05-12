@@ -287,7 +287,7 @@ Play.prototype = {
 		}
 	},
 	getVolPrcnt: function(distance) {
-		var compPrcnt = (distance * 100 / 320) / 100;
+		var compPrcnt = (distance / 320);
 		return (1 - compPrcnt < 0)? 0 : 1 - compPrcnt;
 	}
 };
