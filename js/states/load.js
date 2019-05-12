@@ -22,12 +22,12 @@ Load.prototype = {
 		game.load.image('door', 'door.png');
 		game.load.spritesheet('statue', 'statue.png', 64, 32);
 		game.load.tilemap('level', 'trialMap.json', null, Phaser.Tilemap.TILED_JSON);
+		game.load.spritesheet('tilesheet', 'trialSprites.png', 32, 32);
 		
 		// load audio assets
 		game.load.path = "assets/audio/";
 		game.load.audio("monsterL", "monsterL.mp3");
 		game.load.audio("monsterR", "monsterR.mp3");
-		
 	},
 	create: function() {
 		game.state.start("MainMenue");
