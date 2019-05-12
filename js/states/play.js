@@ -3,7 +3,8 @@
 var Play = function(game) {
     this.MAX_VELOCITY = 300;
     this.LIGHT_RANGE = 200;
-    this.EAR_RANGE = 280;
+	this.EAR_RANGE = 320;
+	this.inHearingRange = false;
 	this.monsterSound = [];
 };
 Play.prototype = {
@@ -20,7 +21,7 @@ Play.prototype = {
         //adding physics
         game.physics.startSystem(Phaser.Physics.ARCADE);
         
-        //changin background color (while testing the light only)
+        //changin background color
 		game.stage.backgroundColor = "#000000";
         
         //adding player
@@ -38,73 +39,81 @@ Play.prototype = {
 		this.monsterSound[1] = game.add.audio("monsterR");
         
         //adding some walls to test ray tracing
-		this.walls = this.game.add.group();
+		this.walls = game.add.group();
 		this.walls.enableBody = true;
 		var i, x, y, tmp;
 		for (i = 0; i < 4; i++) {
-			x = i * this.game.width / 4 + 50;
-			y = this.game.rnd.integerInRange(50, this.game.height - 200);
+			x = i * game.width / 4 + 50;
+			y = game.rnd.integerInRange(50, game.height - 200);
 			tmp = this.walls.create(x, y, "p1");
 			tmp.scale.setTo(3, 3);
 			tmp.body.immovable = true;
 			tmp.tint = 0x000000;
 		}
-		//Create a bitmap texture for drawing light cones
-		this.bitmap = this.game.add.bitmapData(this.game.width, this.game.height);
-		this.bitmap.context.fillStyle = 'rgb(255, 255, 255)';
-		this.bitmap.context.strokeStyle = 'rgb(255, 255, 255)';
-		var lightBitmap = this.game.add.image(0, 0, this.bitmap);
-
-		//adding blend mode to bitmap (requires webgl on the browser)
-		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
 		
-		
-		//statue puzzle
+		//the camera follows the player object
 		game.camera.follow(this.player, 0, 0.5, 0.5);
-
+		//gives enables physics on jewels, keys, doors, and statue
 		blueEye = game.add.sprite(1480, 1150, 'blueEye');
 		game.physics.enable(blueEye);
 		blueEye.enableBody = true;
 		yellowEye = game.add.sprite(250, 950, 'yellowEye');
 		game.physics.enable(yellowEye);
 		yellowEye.enableBody = true;
-
 		key1 = game.add.sprite(1312, 448, 'key');
 		game.physics.enable(key1);
 		key1.enableBody = true;
 		key2 = game.add.sprite(360, 256, 'key');
 		game.physics.enable(key2);
 		key2.enableBody = true;
-
 		statue = game.add.sprite(1312, 448, 'statue');
 		game.physics.enable(statue);
 		statue.enableBody = true;
 		statue.body.immovable = true;
 		statue.scale.setTo(1.5, 1);
-			
+		door1 = game.add.sprite(416, 1248, 'door');
+		game.physics.enable(door1);
+		door1.enableBody = true;
+		door1.body.immovable = true;
+		door2 = game.add.sprite(832, 128, 'door');
+		game.physics.enable(door2);
+		door2.enableBody = true;
+		door2.body.immovable = true;
+
+		//Create a bitmap texture for drawing light cones
+		//this should go at the bottom to cover all srpites 
+		//that will be in darkness
+		//console.log(game.world.width, game.world.height);
+		this.bitmap = game.add.bitmapData(game.world.width, game.world.height);
+		this.bitmap.context.fillStyle = 'rgb(255, 255, 255)';
+		this.bitmap.context.strokeStyle = 'rgb(255, 255, 255)';
+		var lightBitmap = game.add.image(0, 0, this.bitmap);
+
+		//adding blend mode to bitmap (requires webgl on the browser)
+		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
 	},
 	collectkey1: function() {
-		console.log('key 1 taken')
-			keys1 = true;
-			key1.destroy();
+		//console.log('key 1 taken')
+		keys1 = true;
+		key1.destroy();
 			//console.log('itll say true if you got the thing ' + blueJewel);
 	},
 	collectkey2: function() {
-		console.log('key 2 taken')
-			keys2 = true;
-			key2.destroy();
+		//console.log('key 2 taken')
+		keys2 = true;
+		key2.destroy();
 			//console.log('itll say true if you got the thing ' + blueJewel);
 	},
 	collectBlueEye: function() {
 		//console.log('they overlap')
-			blueJewel = true;
-			blueEye.destroy();
+		blueJewel = true;
+		blueEye.destroy();
 			//console.log('itll say true if you got the thing ' + blueJewel);
 	},
 	collectYellowEye: function() {
-		console.log('they overlap')
-			yellowJewel = true;
-			yellowEye.destroy();
+		//console.log('they overlap')
+		yellowJewel = true;
+		yellowEye.destroy();
 	},
 	update: function() {
 	    this.move();
@@ -117,12 +126,26 @@ Play.prototype = {
 	    
 	    //map & object collision
 	    game.physics.arcade.collide(this.player, this.wallsLayer);
+		//stops player from going trhough doors and statue
 		game.physics.arcade.collide(this.player, statue);
+		game.physics.arcade.collide(this.player, door1);
+		game.physics.arcade.collide(this.player, door2);
+		//picks up jewels or keys if player overlaps
 		game.physics.arcade.overlap(this.player, blueEye, this.collectBlueEye, null, this);
 		game.physics.arcade.overlap(this.player, yellowEye, this.collectYellowEye, null, this);
-
 		game.physics.arcade.overlap(this.player, key1, this.collectkey1, null, this);
 		game.physics.arcade.overlap(this.player, key2, this.collectkey2, null, this);
+		//if player have the keys or jewels, it opens doors and destroys statue
+		if(keys2 == true && this.player.x > door1.x && this.player.y > door1.y){
+			door1.destroy();
+		}
+		if(keys1 == true && this.player.x > door2.x && this.player.x < (door2.x +100) && this.player.y > door2.y){
+			door2.destroy();
+		}
+
+		if(yellowJewel == true && this.player.x > 1248 && this.player.x < 1344 && this.player.y > 448 && this.player.y < 480){
+			statue.destroy();
+		}
 	},
 	move: function() {
 	    //moving x axis
@@ -158,20 +181,7 @@ Play.prototype = {
 	rayCast: function () {
 	    //fill the entire light bitmap with a dark shadow color.
 		this.bitmap.context.fillStyle = 'rgb(0, 0, 0)';
-		this.bitmap.context.fillRect(0, 0, this.wallsLayer.widthInPixels, this.wallsLayer.heightInPixels);
-	    
-	    //var gradient = this.bitmap.context.createRadialGradient(
-        //    this.player.x, this.player.y, this.LIGHT_RANGE * 0.75,
-        //    this.player.x, this.player.y, this.LIGHT_RANGE);
-        //gradient.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
-        //gradient.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
-
-        //this.bitmap.context.beginPath();
-        //this.bitmap.context.fillStyle = gradient;
-        //this.bitmap.context.arc(this.game.input.activePointer.x, this.game.input.activePointer.y,
-        //this.LIGHT_RANGE, 0, Math.PI*2);
-        //this.bitmap.context.fill();
-
+		this.bitmap.context.fillRect(game.camera.x, game.camera.y, game.camera.width, game.camera.height);
 		// Ray casting!
 		// Cast rays at intervals in a large circle around the light.
 		// Save all of the intersection points or ray end points if there was no intersection.
@@ -190,7 +200,6 @@ Play.prototype = {
 				points.push(ray.end);
 			}
 		}
-
 		// Connect the dots and fill in the shape, which are cones of light,
 		// with a bright white color. When multiplied with the background,
 		// the white color will allow the full color of the background to
@@ -234,7 +243,7 @@ Play.prototype = {
 				if (intersect) {
 					// Find the closest intersection
 					distance =
-						this.game.math.distance(ray.start.x, ray.start.y, intersect.x, intersect.y);
+						game.math.distance(ray.start.x, ray.start.y, intersect.x, intersect.y);
 					if (distance < distanceToWall) {
 						distanceToWall = distance;
 						closestIntersection = intersect;
@@ -245,19 +254,25 @@ Play.prototype = {
 		return closestIntersection;
 	},
 	playMonsterSound: function () {
-		var xDistance;
-
-		xDistance = this.player.x - this.monster.x;
+		var xDistance = this.player.x - this.monster.x;
+		var volumePrcnt;
 		xDistance = (xDistance < 0) ? -xDistance : xDistance; //abs value
 
-		if (xDistance < this.EAR_RANGE) { //in the range of listening
+		//Takes care of panning
+		if (isInRange(this.player.position, this.monster.position, this.EAR_RANGE)) {
+			//volumePrcnt = this.adjustMonsterVolumePrcnt();
+
 			if (this.player.x > this.monster.x) {
-				this.monsterSound[0].volume = 1;
 				this.monsterSound[1].volume = (this.EAR_RANGE - xDistance) / this.EAR_RANGE;
+				volumePrcnt = this.getVolPrcnt(getDistanceBetween2Points(this.player.position, this.monster.position));
+				this.monsterSound[1].volume = this.monsterSound[1].volume * volumePrcnt;
+				this.monsterSound[0].volume = 1 * volumePrcnt;
 			}
 			else {
 				this.monsterSound[0].volume = (this.EAR_RANGE - xDistance) / this.EAR_RANGE;
-				this.monsterSound[1].volume = 1;
+				volumePrcnt = this.getVolPrcnt(getDistanceBetween2Points(this.player.position, this.monster.position));
+				this.monsterSound[0].volume = this.monsterSound[0].volume * volumePrcnt;
+				this.monsterSound[1].volume = 1 * volumePrcnt;
 			}
 			if (!this.monsterSound[0].isPlaying) {
 				this.monsterSound[0].play('', 0, this.monsterSound[0].volume, true);
@@ -270,5 +285,9 @@ Play.prototype = {
 			this.monsterSound[0].stop();
 			this.monsterSound[1].stop();
 		}
+	},
+	getVolPrcnt: function(distance) {
+		var compPrcnt = (distance / 320);
+		return (1 - compPrcnt < 0)? 0 : 1 - compPrcnt;
 	}
 };
