@@ -3,7 +3,8 @@
 var Play = function(game) {
     this.MAX_VELOCITY = 300;
     this.LIGHT_RANGE = 200;
-    this.EAR_RANGE = 280;
+	this.EAR_RANGE = 320;
+	this.inHearingRange = false;
 	this.monsterSound = [];
 };
 Play.prototype = {
@@ -20,7 +21,7 @@ Play.prototype = {
         //adding physics
         game.physics.startSystem(Phaser.Physics.ARCADE);
         
-        //changin background color (while testing the light only)
+        //changin background color
 		game.stage.backgroundColor = "#000000";
         
         //adding player
@@ -38,26 +39,17 @@ Play.prototype = {
 		this.monsterSound[1] = game.add.audio("monsterR");
         
         //adding some walls to test ray tracing
-		this.walls = this.game.add.group();
+		this.walls = game.add.group();
 		this.walls.enableBody = true;
 		var i, x, y, tmp;
 		for (i = 0; i < 4; i++) {
-			x = i * this.game.width / 4 + 50;
-			y = this.game.rnd.integerInRange(50, this.game.height - 200);
+			x = i * game.width / 4 + 50;
+			y = game.rnd.integerInRange(50, game.height - 200);
 			tmp = this.walls.create(x, y, "p1");
 			tmp.scale.setTo(3, 3);
 			tmp.body.immovable = true;
 			tmp.tint = 0x000000;
 		}
-		//Create a bitmap texture for drawing light cones
-		this.bitmap = this.game.add.bitmapData(this.game.width, this.game.height);
-		this.bitmap.context.fillStyle = 'rgb(255, 255, 255)';
-		this.bitmap.context.strokeStyle = 'rgb(255, 255, 255)';
-		var lightBitmap = this.game.add.image(0, 0, this.bitmap);
-
-		//adding blend mode to bitmap (requires webgl on the browser)
-		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
-		
 		
 		//the camera follows the player object
 		game.camera.follow(this.player, 0, 0.5, 0.5);
@@ -87,7 +79,18 @@ Play.prototype = {
 		game.physics.enable(door2);
 		door2.enableBody = true;
 		door2.body.immovable = true;
-			
+
+		//Create a bitmap texture for drawing light cones
+		//this should go at the bottom to cover all srpites 
+		//that will be in darkness
+		//console.log(game.world.width, game.world.height);
+		this.bitmap = game.add.bitmapData(game.world.width, game.world.height);
+		this.bitmap.context.fillStyle = 'rgb(255, 255, 255)';
+		this.bitmap.context.strokeStyle = 'rgb(255, 255, 255)';
+		var lightBitmap = game.add.image(0, 0, this.bitmap);
+
+		//adding blend mode to bitmap (requires webgl on the browser)
+		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
 	},
 	collectkey1: function() {
 		//console.log('key 1 taken')
@@ -178,20 +181,7 @@ Play.prototype = {
 	rayCast: function () {
 	    //fill the entire light bitmap with a dark shadow color.
 		this.bitmap.context.fillStyle = 'rgb(0, 0, 0)';
-		this.bitmap.context.fillRect(0, 0, this.wallsLayer.widthInPixels, this.wallsLayer.heightInPixels);
-	    
-	    //var gradient = this.bitmap.context.createRadialGradient(
-        //    this.player.x, this.player.y, this.LIGHT_RANGE * 0.75,
-        //    this.player.x, this.player.y, this.LIGHT_RANGE);
-        //gradient.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
-        //gradient.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
-
-        //this.bitmap.context.beginPath();
-        //this.bitmap.context.fillStyle = gradient;
-        //this.bitmap.context.arc(this.game.input.activePointer.x, this.game.input.activePointer.y,
-        //this.LIGHT_RANGE, 0, Math.PI*2);
-        //this.bitmap.context.fill();
-
+		this.bitmap.context.fillRect(game.camera.x, game.camera.y, game.camera.width, game.camera.height);
 		// Ray casting!
 		// Cast rays at intervals in a large circle around the light.
 		// Save all of the intersection points or ray end points if there was no intersection.
@@ -210,7 +200,6 @@ Play.prototype = {
 				points.push(ray.end);
 			}
 		}
-
 		// Connect the dots and fill in the shape, which are cones of light,
 		// with a bright white color. When multiplied with the background,
 		// the white color will allow the full color of the background to
@@ -254,7 +243,7 @@ Play.prototype = {
 				if (intersect) {
 					// Find the closest intersection
 					distance =
-						this.game.math.distance(ray.start.x, ray.start.y, intersect.x, intersect.y);
+						game.math.distance(ray.start.x, ray.start.y, intersect.x, intersect.y);
 					if (distance < distanceToWall) {
 						distanceToWall = distance;
 						closestIntersection = intersect;
@@ -265,19 +254,25 @@ Play.prototype = {
 		return closestIntersection;
 	},
 	playMonsterSound: function () {
-		var xDistance;
-
-		xDistance = this.player.x - this.monster.x;
+		var xDistance = this.player.x - this.monster.x;
+		var volumePrcnt;
 		xDistance = (xDistance < 0) ? -xDistance : xDistance; //abs value
 
-		if (xDistance < this.EAR_RANGE) { //in the range of listening
+		//Takes care of panning
+		if (isInRange(this.player.position, this.monster.position, this.EAR_RANGE)) {
+			//volumePrcnt = this.adjustMonsterVolumePrcnt();
+
 			if (this.player.x > this.monster.x) {
-				this.monsterSound[0].volume = 1;
 				this.monsterSound[1].volume = (this.EAR_RANGE - xDistance) / this.EAR_RANGE;
+				volumePrcnt = this.getVolPrcnt(getDistanceBetween2Points(this.player.position, this.monster.position));
+				this.monsterSound[1].volume = this.monsterSound[1].volume * volumePrcnt;
+				this.monsterSound[0].volume = 1 * volumePrcnt;
 			}
 			else {
 				this.monsterSound[0].volume = (this.EAR_RANGE - xDistance) / this.EAR_RANGE;
-				this.monsterSound[1].volume = 1;
+				volumePrcnt = this.getVolPrcnt(getDistanceBetween2Points(this.player.position, this.monster.position));
+				this.monsterSound[0].volume = this.monsterSound[0].volume * volumePrcnt;
+				this.monsterSound[1].volume = 1 * volumePrcnt;
 			}
 			if (!this.monsterSound[0].isPlaying) {
 				this.monsterSound[0].play('', 0, this.monsterSound[0].volume, true);
@@ -290,5 +285,9 @@ Play.prototype = {
 			this.monsterSound[0].stop();
 			this.monsterSound[1].stop();
 		}
+	},
+	getVolPrcnt: function(distance) {
+		var compPrcnt = (distance * 100 / 320) / 100;
+		return (1 - compPrcnt < 0)? 0 : 1 - compPrcnt;
 	}
 };
