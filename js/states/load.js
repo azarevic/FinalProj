@@ -19,11 +19,10 @@ Load.prototype = {
         game.load.image("blueEye", "blue jewel.png");
 		game.load.image("yellowEye", "yellow jewel.png");
 		game.load.image("key", "key.png");
+		game.load.image('door', 'door.png');
 		game.load.spritesheet('statue', 'statue.png', 64, 32);
 		game.load.tilemap('level', 'trialMap.json', null, Phaser.Tilemap.TILED_JSON);
 		game.load.spritesheet('tilesheet', 'trialSprites.png', 32, 32);
-		
-		
 		
 		// load audio assets
 		game.load.path = "assets/audio/";
