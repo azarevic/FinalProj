@@ -51,28 +51,34 @@ Play.prototype = {
 			tmp.tint = 0x000000;
 		}
 		
-		//statue puzzle
+		//the camera follows the player object
 		game.camera.follow(this.player, 0, 0.5, 0.5);
-
+		//gives enables physics on jewels, keys, doors, and statue
 		blueEye = game.add.sprite(1480, 1150, 'blueEye');
 		game.physics.enable(blueEye);
 		blueEye.enableBody = true;
 		yellowEye = game.add.sprite(250, 950, 'yellowEye');
 		game.physics.enable(yellowEye);
 		yellowEye.enableBody = true;
-
 		key1 = game.add.sprite(1312, 448, 'key');
 		game.physics.enable(key1);
 		key1.enableBody = true;
 		key2 = game.add.sprite(360, 256, 'key');
 		game.physics.enable(key2);
 		key2.enableBody = true;
-
 		statue = game.add.sprite(1312, 448, 'statue');
 		game.physics.enable(statue);
 		statue.enableBody = true;
 		statue.body.immovable = true;
 		statue.scale.setTo(1.5, 1);
+		door1 = game.add.sprite(416, 1248, 'door');
+		game.physics.enable(door1);
+		door1.enableBody = true;
+		door1.body.immovable = true;
+		door2 = game.add.sprite(832, 128, 'door');
+		game.physics.enable(door2);
+		door2.enableBody = true;
+		door2.body.immovable = true;
 
 		//Create a bitmap texture for drawing light cones
 		//this should go at the bottom to cover all srpites 
@@ -85,30 +91,29 @@ Play.prototype = {
 
 		//adding blend mode to bitmap (requires webgl on the browser)
 		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
-			
 	},
 	collectkey1: function() {
-		console.log('key 1 taken')
-			keys1 = true;
-			key1.destroy();
+		//console.log('key 1 taken')
+		keys1 = true;
+		key1.destroy();
 			//console.log('itll say true if you got the thing ' + blueJewel);
 	},
 	collectkey2: function() {
-		console.log('key 2 taken')
-			keys2 = true;
-			key2.destroy();
+		//console.log('key 2 taken')
+		keys2 = true;
+		key2.destroy();
 			//console.log('itll say true if you got the thing ' + blueJewel);
 	},
 	collectBlueEye: function() {
 		//console.log('they overlap')
-			blueJewel = true;
-			blueEye.destroy();
+		blueJewel = true;
+		blueEye.destroy();
 			//console.log('itll say true if you got the thing ' + blueJewel);
 	},
 	collectYellowEye: function() {
-		console.log('they overlap')
-			yellowJewel = true;
-			yellowEye.destroy();
+		//console.log('they overlap')
+		yellowJewel = true;
+		yellowEye.destroy();
 	},
 	update: function() {
 	    this.move();
@@ -121,12 +126,26 @@ Play.prototype = {
 	    
 	    //map & object collision
 	    game.physics.arcade.collide(this.player, this.wallsLayer);
+		//stops player from going trhough doors and statue
 		game.physics.arcade.collide(this.player, statue);
+		game.physics.arcade.collide(this.player, door1);
+		game.physics.arcade.collide(this.player, door2);
+		//picks up jewels or keys if player overlaps
 		game.physics.arcade.overlap(this.player, blueEye, this.collectBlueEye, null, this);
 		game.physics.arcade.overlap(this.player, yellowEye, this.collectYellowEye, null, this);
-
 		game.physics.arcade.overlap(this.player, key1, this.collectkey1, null, this);
 		game.physics.arcade.overlap(this.player, key2, this.collectkey2, null, this);
+		//if player have the keys or jewels, it opens doors and destroys statue
+		if(keys2 == true && this.player.x > door1.x && this.player.y > door1.y){
+			door1.destroy();
+		}
+		if(keys1 == true && this.player.x > door2.x && this.player.x < (door2.x +100) && this.player.y > door2.y){
+			door2.destroy();
+		}
+
+		if(yellowJewel == true && this.player.x > 1248 && this.player.x < 1344 && this.player.y > 448 && this.player.y < 480){
+			statue.destroy();
+		}
 	},
 	move: function() {
 	    //moving x axis
@@ -162,7 +181,7 @@ Play.prototype = {
 	rayCast: function () {
 	    //fill the entire light bitmap with a dark shadow color.
 		this.bitmap.context.fillStyle = 'rgb(0, 0, 0)';
-		this.bitmap.context.fillRect(game.camera.x, game.camera.y, game.camera.width, game.camera.height);
+		this.bitmap.context.fillRect(game.camera.x, game.camera.y, game.camera.width + 32, game.camera.height + 32);
 		// Ray casting!
 		// Cast rays at intervals in a large circle around the light.
 		// Save all of the intersection points or ray end points if there was no intersection.
@@ -268,7 +287,7 @@ Play.prototype = {
 		}
 	},
 	getVolPrcnt: function(distance) {
-		var compPrcnt = (distance * 100 / 320) / 100;
+		var compPrcnt = (distance / 320);
 		return (1 - compPrcnt < 0)? 0 : 1 - compPrcnt;
 	}
 };
