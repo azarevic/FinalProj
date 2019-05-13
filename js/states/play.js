@@ -1,44 +1,46 @@
 //Play state
 
-var Play = function(game) {
-    this.MAX_VELOCITY = 300;
-    this.LIGHT_RANGE = 200;
+var Play = function (game) {
+	this.MAX_VELOCITY = 300;
+	this.MAX_LIGHT_RANGE = 200;
+	this.usedLightRange = this.MAX_LIGHT_RANGE; //one is MaxLight range, the other is the actual range used
 	this.EAR_RANGE = 320;
 	this.inHearingRange = false;
 	this.monsterSound = [];
+	this.lightSwitch = true; //true = on false = off
 };
 Play.prototype = {
-	create: function() {
-	    //map
-	    this.map = game.add.tilemap('level');
+	create: function () {
+		//map
+		this.map = game.add.tilemap('level');
 		this.map.addTilesetImage('trialSprites', 'tilesheet');
 		this.floorLayer = this.map.createLayer('ground');
 		this.wallsLayer = this.map.createLayer('walls');
 		this.map.setCollisionByExclusion([], true, this.wallsLayer);
 		this.wallsLayer.resizeWorld();
-		
+
 		console.log("Play");
-        //adding physics
-        game.physics.startSystem(Phaser.Physics.ARCADE);
-        
-        //changin background color
+		//adding physics
+		game.physics.startSystem(Phaser.Physics.ARCADE);
+
+		//changin background color
 		game.stage.backgroundColor = "#000000";
-        
-        //adding player
-        this.player = new Player(game, "p1");
-        game.add.existing(this.player);
-        
-        //adding cursor keys
-        cursors = game.input.keyboard.createCursorKeys();
-        
-        // add enemy
-        this.monster = new Enemy(game, "monster");
-        game.add.existing(this.monster);
-        //adding TMP enemy audio
+
+		//adding player
+		this.player = new Player(game, "p1");
+		game.add.existing(this.player);
+
+		//adding cursor keys
+		cursors = game.input.keyboard.createCursorKeys();
+
+		// add enemy
+		this.monster = new Enemy(game, "monster");
+		game.add.existing(this.monster);
+		//adding TMP enemy audio
 		this.monsterSound[0] = game.add.audio("monsterL");
 		this.monsterSound[1] = game.add.audio("monsterR");
-        
-        //adding some walls to test ray tracing
+
+		//adding some walls to test ray tracing
 		this.walls = game.add.group();
 		this.walls.enableBody = true;
 		var i, x, y, tmp;
@@ -50,7 +52,7 @@ Play.prototype = {
 			tmp.body.immovable = true;
 			tmp.tint = 0x000000;
 		}
-		
+
 		//the camera follows the player object
 		game.camera.follow(this.player, 0, 0.5, 0.5);
 		//gives enables physics on jewels, keys, doors, and statue
@@ -92,40 +94,40 @@ Play.prototype = {
 		//adding blend mode to bitmap (requires webgl on the browser)
 		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
 	},
-	collectkey1: function() {
+	collectkey1: function () {
 		//console.log('key 1 taken')
 		keys1 = true;
 		key1.destroy();
-			//console.log('itll say true if you got the thing ' + blueJewel);
+		//console.log('itll say true if you got the thing ' + blueJewel);
 	},
-	collectkey2: function() {
+	collectkey2: function () {
 		//console.log('key 2 taken')
 		keys2 = true;
 		key2.destroy();
-			//console.log('itll say true if you got the thing ' + blueJewel);
+		//console.log('itll say true if you got the thing ' + blueJewel);
 	},
-	collectBlueEye: function() {
+	collectBlueEye: function () {
 		//console.log('they overlap')
 		blueJewel = true;
 		blueEye.destroy();
-			//console.log('itll say true if you got the thing ' + blueJewel);
+		//console.log('itll say true if you got the thing ' + blueJewel);
 	},
-	collectYellowEye: function() {
+	collectYellowEye: function () {
 		//console.log('they overlap')
 		yellowJewel = true;
 		yellowEye.destroy();
 	},
-	update: function() {
-	    this.move();
-	    this.rayCast();
-	    this.playMonsterSound();
-	    game.physics.arcade.overlap(this.player, this.monster, this.colPE, null, this);
-	    game.physics.arcade.collide(this.player, this.walls);
-	    //map
-	    game.physics.arcade.collide(this.player, this.mapLayer);
-	    
-	    //map & object collision
-	    game.physics.arcade.collide(this.player, this.wallsLayer);
+	update: function () {
+		this.move();
+		this.rayCast();
+		this.playMonsterSound();
+		game.physics.arcade.overlap(this.player, this.monster, this.colPE, null, this);
+		game.physics.arcade.collide(this.player, this.walls);
+		//map
+		game.physics.arcade.collide(this.player, this.mapLayer);
+
+		//map & object collision
+		game.physics.arcade.collide(this.player, this.wallsLayer);
 		//stops player from going trhough doors and statue
 		game.physics.arcade.collide(this.player, statue);
 		game.physics.arcade.collide(this.player, door1);
@@ -136,50 +138,62 @@ Play.prototype = {
 		game.physics.arcade.overlap(this.player, key1, this.collectkey1, null, this);
 		game.physics.arcade.overlap(this.player, key2, this.collectkey2, null, this);
 		//if player have the keys or jewels, it opens doors and destroys statue
-		if(keys2 == true && this.player.x > door1.x && this.player.y > door1.y){
+		if (keys2 == true && this.player.x > door1.x && this.player.y > door1.y) {
 			door1.destroy();
 		}
-		if(keys1 == true && this.player.x > door2.x && this.player.x < (door2.x +100) && this.player.y > door2.y){
+		if (keys1 == true && this.player.x > door2.x && this.player.x < (door2.x + 100) && this.player.y > door2.y) {
 			door2.destroy();
 		}
 
-		if(yellowJewel == true && this.player.x > 1248 && this.player.x < 1344 && this.player.y > 448 && this.player.y < 480){
+		if (yellowJewel == true && this.player.x > 1248 && this.player.x < 1344 && this.player.y > 448 && this.player.y < 480) {
 			statue.destroy();
 		}
 	},
-	move: function() {
-	    //moving x axis
-	    if (cursors.right.isDown) {
-	        this.player.body.velocity.x = this.MAX_VELOCITY;
-	    }
-	    else if (cursors.left.isDown) {
-	        this.player.body.velocity.x = -this.MAX_VELOCITY;
-	    }
-	    else {
-	        this.player.body.velocity.x = 0;
-	    }
-	    
-	    //moving y axis
-	    if (cursors.up.isDown) {
-	        this.player.body.velocity.y = -this.MAX_VELOCITY;
-	    }
-	    else if (cursors.down.isDown) {
-	        this.player.body.velocity.y = this.MAX_VELOCITY;
-	    }
-	    else {
-	        this.player.body.velocity.y = 0;
-	    }
+	move: function () {
+		//light on/off
+		if (game.input.keyboard.justPressed(Phaser.Keyboard.F)) {
+			this.lightSwitch = (this.lightSwitch == true) ? false : true;//negating its value makes it 1 or -1 rendering the else if below useless	
+			if (this.lightSwitch) {
+				this.usedLightRange = 200;
+				console.log("switched to 200");
+			}
+			else {
+				this.usedLightRange = 0;
+				console.log("switched to 0");
+			}
+		}
+		//moving x axis
+		if (cursors.right.isDown) {
+			this.player.body.velocity.x = this.MAX_VELOCITY;
+		}
+		else if (cursors.left.isDown) {
+			this.player.body.velocity.x = -this.MAX_VELOCITY;
+		}
+		else {
+			this.player.body.velocity.x = 0;
+		}
+
+		//moving y axis
+		if (cursors.up.isDown) {
+			this.player.body.velocity.y = -this.MAX_VELOCITY;
+		}
+		else if (cursors.down.isDown) {
+			this.player.body.velocity.y = this.MAX_VELOCITY;
+		}
+		else {
+			this.player.body.velocity.y = 0;
+		}
 	},
-	colPE: function(player, enemy) {
-	    player.kill();
-	    enemy.kill();
-	    this.monsterSound[0].stop();
-	    this.monsterSound[1].stop();
-	    game.state.start("GameOver");
+	colPE: function (player, enemy) {
+		player.kill();
+		enemy.kill();
+		this.monsterSound[0].stop();
+		this.monsterSound[1].stop();
+		game.state.start("GameOver");
 	},
 	//adapted from: https://gamemechanicexplorer.com/#raycasting-2
 	rayCast: function () {
-	    //fill the entire light bitmap with a dark shadow color.
+		//fill the entire light bitmap with a dark shadow color.
 		this.bitmap.context.fillStyle = 'rgb(0, 0, 0)';
 		this.bitmap.context.fillRect(game.camera.x, game.camera.y, game.camera.width + 32, game.camera.height + 32);
 		// Ray casting!
@@ -188,7 +202,7 @@ Play.prototype = {
 		var points = [];
 		for (var a = 0; a < Math.PI * 2; a += Math.PI / 360) {
 			var ray = new Phaser.Line(this.player.x, this.player.y,
-				this.player.x + Math.cos(a) * this.LIGHT_RANGE, this.player.y + Math.sin(a) * this.LIGHT_RANGE);//last 2 parameters indicate length
+				this.player.x + Math.cos(a) * this.usedLightRange, this.player.y + Math.sin(a) * this.usedLightRange);//last 2 parameters indicate length
 
 			// Check if the ray intersected any walls
 			var intersect = this.getWallIntersection(ray);
@@ -286,8 +300,8 @@ Play.prototype = {
 			this.monsterSound[1].stop();
 		}
 	},
-	getVolPrcnt: function(distance) {
+	getVolPrcnt: function (distance) {
 		var compPrcnt = (distance / 320);
-		return (1 - compPrcnt < 0)? 0 : 1 - compPrcnt;
+		return (1 - compPrcnt < 0) ? 0 : 1 - compPrcnt;
 	}
 };
