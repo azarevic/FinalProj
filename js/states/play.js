@@ -181,7 +181,7 @@ Play.prototype = {
 	rayCast: function () {
 	    //fill the entire light bitmap with a dark shadow color.
 		this.bitmap.context.fillStyle = 'rgb(0, 0, 0)';
-		this.bitmap.context.fillRect(game.camera.x, game.camera.y, game.camera.width, game.camera.height);
+		this.bitmap.context.fillRect(game.camera.x, game.camera.y, game.camera.width + 32, game.camera.height + 32);
 		// Ray casting!
 		// Cast rays at intervals in a large circle around the light.
 		// Save all of the intersection points or ray end points if there was no intersection.
