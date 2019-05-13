@@ -1,5 +1,8 @@
 body {
 	font-family: Helvetica;
+	background-color: #333;
+	width: 960px;
+	margin: 0 auto;
 }
 
 canvas {
