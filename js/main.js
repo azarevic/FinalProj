@@ -1,3 +1,5 @@
+// git repo: https://github.com/azarevic/FinalProj.git
+
 // Press [SPACE] to begin game on load.
 // Use the arrow keys to move the player character (white square).
 // Move right along the bottom edge of the map until you reach the end.
@@ -8,6 +10,7 @@
 // You will encounter the monster at this time (red triangle).
 // Go around it and pick up the key behind it.
 // (The enemy doesn't move but collision will take you to the game over state).
+// (Press [SPACE] to restart in game over state).
 // Exit the room again and move right until you return to the hall.
 // Go immediately down and take a left at the bottom edge.
 // There will be an open hall where a door used to be.
