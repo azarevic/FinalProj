@@ -50,7 +50,6 @@ function getDistanceBetween2Points(a, b) {
 	return Math.sqrt(x * x + y * y);
 }
 function isInRange(a, b, range) {//takes 2 points and the value of the range.
-<<<<<<< HEAD
 	var x = (a.x - b.x < 0) ? -(a.x - b.x) : (a.x - b.x);
 	var y = (a.y - b.y < 0) ? -(a.y - b.y) : (a.y - b.y);
 	return (x < range && y < range) ? true : false;
@@ -58,9 +57,7 @@ function isInRange(a, b, range) {//takes 2 points and the value of the range.
 function preload() {
 	//to center game
 	game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-=======
 	var x = (a.x - b.x < 0)? -(a.x - b.x) : (a.x - b.x);
 	var y = (a.y - b.y < 0)? -(a.y - b.y) : (a.y - b.y);
 	return (x < range && y < range)? true: false;
->>>>>>> instruct
 }
