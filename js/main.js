@@ -1,3 +1,8 @@
+// 36
+// Alejandro Landaverde Henriquez
+// Misael Ruiz Garcia
+// Andrea Zarevich
+
 // git repo: https://github.com/azarevic/FinalProj.git
 
 // Press [SPACE] to begin game on load.
