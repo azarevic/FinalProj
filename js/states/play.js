@@ -8,6 +8,7 @@ var Play = function (game) {
 	this.inHearingRange = false;
 	this.monsterSound = [];
 	this.lightSwitch = true; //true = on false = off
+	this.bitmapBleed = 32; //how much bigger the bitmap is than the camera
 };
 Play.prototype = {
 	create: function () {
@@ -86,7 +87,7 @@ Play.prototype = {
 		//this should go at the bottom to cover all srpites 
 		//that will be in darkness
 		//console.log(game.world.width, game.world.height);
-		this.bitmap = game.add.bitmapData(game.world.width, game.world.height);
+		this.bitmap = game.add.bitmapData(game.world.width + this.bitmapBleed, game.world.height + this.bitmapBleed);
 		this.bitmap.context.fillStyle = 'rgb(255, 255, 255)';
 		this.bitmap.context.strokeStyle = 'rgb(255, 255, 255)';
 		var lightBitmap = game.add.image(0, 0, this.bitmap);
@@ -195,7 +196,7 @@ Play.prototype = {
 	rayCast: function () {
 		//fill the entire light bitmap with a dark shadow color.
 		this.bitmap.context.fillStyle = 'rgb(0, 0, 0)';
-		this.bitmap.context.fillRect(game.camera.x, game.camera.y, game.camera.width + 32, game.camera.height + 32);
+		this.bitmap.context.fillRect(game.camera.x, game.camera.y, game.camera.width + this.bitmapBleed, game.camera.height + this.bitmapBleed);
 		// Ray casting!
 		// Cast rays at intervals in a large circle around the light.
 		// Save all of the intersection points or ray end points if there was no intersection.
