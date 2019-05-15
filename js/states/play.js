@@ -197,13 +197,14 @@ Play.prototype = {
 		//fill the entire light bitmap with a dark shadow color.
 		this.bitmap.context.fillStyle = 'rgb(0, 0, 0)';
 		this.bitmap.context.fillRect(game.camera.x, game.camera.y, game.camera.width + this.bitmapBleed, game.camera.height + this.bitmapBleed);
+		var rayLength = game.rnd.integerInRange(-0, 0); //animates the light flickering, this will be used by how close you are to the monster
 		// Ray casting!
 		// Cast rays at intervals in a large circle around the light.
 		// Save all of the intersection points or ray end points if there was no intersection.
 		var points = [];
 		for (var a = 0; a < Math.PI * 2; a += Math.PI / 360) {
 			var ray = new Phaser.Line(this.player.x, this.player.y,
-				this.player.x + Math.cos(a) * this.usedLightRange, this.player.y + Math.sin(a) * this.usedLightRange);//last 2 parameters indicate length
+				this.player.x + Math.cos(a) * (this.usedLightRange + rayLength), this.player.y + Math.sin(a) * (this.usedLightRange + rayLength));//last 2 parameters indicate length
 
 			// Check if the ray intersected any walls
 			var intersect = this.getWallIntersection(ray);
@@ -215,12 +216,18 @@ Play.prototype = {
 				points.push(ray.end);
 			}
 		}
+		// Draw circle of light with a soft edge
+		var gradient = this.bitmap.context.createRadialGradient(
+			this.player.x, this.player.y, this.MAX_LIGHT_RANGE * 0.75,
+			this.player.x, this.player.y, this.MAX_LIGHT_RANGE);
+		gradient.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
+		gradient.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
 		// Connect the dots and fill in the shape, which are cones of light,
 		// with a bright white color. When multiplied with the background,
 		// the white color will allow the full color of the background to
 		// shine through.
 		this.bitmap.context.beginPath();
-		this.bitmap.context.fillStyle = "rgb(255, 255, 255)"; //from 0 to 255. 0 is pitch black, 255 is clear
+		this.bitmap.context.fillStyle = gradient;//"rgb(255, 255, 255)"; //from 0 to 255. 0 is pitch black, 255 is clear
 		this.bitmap.context.moveTo(points[0].x, points[0].y);
 		for (var i = 0; i < points.length; i++) {
 			this.bitmap.context.lineTo(points[i].x, points[i].y);
