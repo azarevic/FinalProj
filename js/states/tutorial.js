@@ -9,7 +9,7 @@ Tutorial.prototype = {
 		titleText.anchor.set(0.5);
 	},
 	update: function() {
-		if(game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.BACKSPACE)) {
 			game.state.start("MainMenue");
 		}
 	}
