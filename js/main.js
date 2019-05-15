@@ -45,6 +45,7 @@ window.onload = function () {
 	game.state.add("Boot", Boot);
 	game.state.add("Load", Load);
 	game.state.add("MainMenue", MainMenue);
+	game.state.add("Tutorial", Tutorial);
 	game.state.add("Play", Play);
 	game.state.add("GameOver", GameOver);
 	game.state.start("Boot");
