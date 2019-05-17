@@ -1,10 +1,10 @@
 //Play state
 
 var Play = function (game) {
-	this.MAX_VELOCITY = 300;
+	this.MAX_VELOCITY = 200;
 	this.MAX_LIGHT_RANGE = 200;
 	this.usedLightRange = this.MAX_LIGHT_RANGE; //one is MaxLight range, the other is the actual range used
-	this.EAR_RANGE = 320;
+	this.EAR_RANGE = 1000;
 	this.inHearingRange = false;
 	this.monsterSound = [];
 	this.lightSwitch = true; //true = on false = off
@@ -96,6 +96,11 @@ Play.prototype = {
 
 		//adding blend mode to bitmap (requires webgl on the browser)
 		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
+
+		// setup monster spawning timer
+        this.spawnMonsterTimer = game.time.create(false);	
+        this.spawnMonsterTimer.loop(30000, this.spawnMonster, this); 
+        this.spawnMonsterTimer.start();
 	},
 	collectkey1: function () {
 		//console.log('key 1 taken')
@@ -192,6 +197,7 @@ Play.prototype = {
 		enemy.kill();
 		this.monsterSound[0].stop();
 		this.monsterSound[1].stop();
+		this.spawnMonsterTimer.stop();
 		game.state.start("GameOver");
 	},
 	//adapted from: https://gamemechanicexplorer.com/#raycasting-2
@@ -315,5 +321,11 @@ Play.prototype = {
 	getVolPrcnt: function (distance) {
 		var compPrcnt = (distance / 320);
 		return (1 - compPrcnt < 0) ? 0 : 1 - compPrcnt;
+	},
+	spawnMonster : function () {
+		console.log("relocating creature...");
+		console.log("monster pos before reloc:" + this.monster.x + ", " + this.monster.y);
+		this.monster.x = game.rnd.integerInRange(32, game.camera.width - 32);
+		this.monster.y = game.rnd.integerInRange(32, game.camera.height - 32);
 	}
 };
