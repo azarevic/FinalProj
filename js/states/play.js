@@ -9,6 +9,8 @@ var Play = function (game) {
 	this.monsterSound = [];
 	this.lightSwitch = true; //true = on false = off
 	this.bitmapBleed = 32; //how much bigger the bitmap is than the camera
+	this.LIGHT_FLICKER_BASE = 3;
+	this.flickerAmount = this.LIGHT_FLICKER_BASE;
 };
 Play.prototype = {
 	create: function () {
@@ -35,7 +37,7 @@ Play.prototype = {
 		cursors = game.input.keyboard.createCursorKeys();
 
 		// add enemy
-		this.monster = new Enemy(game, "monster");
+		this.monster = new Enemy(game, "");
 		game.add.existing(this.monster);
 		//adding TMP enemy audio
 		this.monsterSound[0] = game.add.audio("monsterL");
@@ -44,15 +46,15 @@ Play.prototype = {
 		//adding some walls to test ray tracing
 		this.walls = game.add.group();
 		this.walls.enableBody = true;
-		var i, x, y, tmp;
-		for (i = 0; i < 4; i++) {
-			x = i * game.width / 4 + 50;
-			y = game.rnd.integerInRange(50, game.height - 200);
-			tmp = this.walls.create(x, y, "p1");
-			tmp.scale.setTo(3, 3);
-			tmp.body.immovable = true;
-			tmp.tint = 0x000000;
-		}
+		// var i, x, y, tmp;
+		// for (i = 0; i < 4; i++) {
+		// 	x = i * game.width / 4 + 50;
+		// 	y = game.rnd.integerInRange(50, game.height - 200);
+		// 	tmp = this.walls.create(x, y, "p1");
+		// 	tmp.scale.setTo(3, 3);
+		// 	tmp.body.immovable = true;
+		// 	tmp.tint = 0x000000;
+		// }
 
 		//the camera follows the player object
 		game.camera.follow(this.player, 0, 0.5, 0.5);
@@ -120,8 +122,8 @@ Play.prototype = {
 	},
 	update: function () {
 		this.move();
-		this.rayCast();
 		this.playMonsterSound();
+		this.rayCast();
 		game.physics.arcade.overlap(this.player, this.monster, this.colPE, null, this);
 		game.physics.arcade.collide(this.player, this.walls);
 		//map
@@ -197,7 +199,7 @@ Play.prototype = {
 		//fill the entire light bitmap with a dark shadow color.
 		this.bitmap.context.fillStyle = 'rgb(0, 0, 0)';
 		this.bitmap.context.fillRect(game.camera.x, game.camera.y, game.camera.width + this.bitmapBleed, game.camera.height + this.bitmapBleed);
-		var rayLength = (this.lightSwitch)? game.rnd.integerInRange(-10, 10) : 0; //animates the light flickering, this will be used by how close you are to the monster
+		var rayLength = (this.lightSwitch)? game.rnd.integerInRange(-this.flickerAmount, this.LIGHT_FLICKER_BASE) : 0; //animates the light flickering, this will be used by how close you are to the monster
 		// Ray casting!
 		// Cast rays at intervals in a large circle around the light.
 		// Save all of the intersection points or ray end points if there was no intersection.
@@ -296,6 +298,7 @@ Play.prototype = {
 				this.monsterSound[0].volume = this.monsterSound[0].volume * volumePrcnt;
 				this.monsterSound[1].volume = 1 * volumePrcnt;
 			}
+			this.flickerAmount = this.LIGHT_FLICKER_BASE + volumePrcnt * 15;
 			if (!this.monsterSound[0].isPlaying) {
 				this.monsterSound[0].play('', 0, this.monsterSound[0].volume, true);
 			}
@@ -306,6 +309,7 @@ Play.prototype = {
 		else {
 			this.monsterSound[0].stop();
 			this.monsterSound[1].stop();
+			this.flickerAmount = this.LIGHT_FLICKER_BASE;
 		}
 	},
 	getVolPrcnt: function (distance) {
