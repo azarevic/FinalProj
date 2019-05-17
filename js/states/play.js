@@ -1,14 +1,16 @@
 //Play state
 
 var Play = function (game) {
-	this.MAX_VELOCITY = 300;
+	this.MAX_VELOCITY = 200;
 	this.MAX_LIGHT_RANGE = 200;
 	this.usedLightRange = this.MAX_LIGHT_RANGE; //one is MaxLight range, the other is the actual range used
-	this.EAR_RANGE = 320;
+	this.EAR_RANGE = 1000;
 	this.inHearingRange = false;
 	this.monsterSound = [];
 	this.lightSwitch = true; //true = on false = off
 	this.bitmapBleed = 32; //how much bigger the bitmap is than the camera
+	this.LIGHT_FLICKER_BASE = 3;
+	this.flickerAmount = this.LIGHT_FLICKER_BASE;
 };
 Play.prototype = {
 	create: function () {
@@ -35,7 +37,7 @@ Play.prototype = {
 		cursors = game.input.keyboard.createCursorKeys();
 
 		// add enemy
-		this.monster = new Enemy(game, "monster");
+		this.monster = new Enemy(game, "");
 		game.add.existing(this.monster);
 		//adding TMP enemy audio
 		this.monsterSound[0] = game.add.audio("monsterL");
@@ -44,15 +46,15 @@ Play.prototype = {
 		//adding some walls to test ray tracing
 		this.walls = game.add.group();
 		this.walls.enableBody = true;
-		var i, x, y, tmp;
-		for (i = 0; i < 4; i++) {
-			x = i * game.width / 4 + 50;
-			y = game.rnd.integerInRange(50, game.height - 200);
-			tmp = this.walls.create(x, y, "p1");
-			tmp.scale.setTo(3, 3);
-			tmp.body.immovable = true;
-			tmp.tint = 0x000000;
-		}
+		// var i, x, y, tmp;
+		// for (i = 0; i < 4; i++) {
+		// 	x = i * game.width / 4 + 50;
+		// 	y = game.rnd.integerInRange(50, game.height - 200);
+		// 	tmp = this.walls.create(x, y, "p1");
+		// 	tmp.scale.setTo(3, 3);
+		// 	tmp.body.immovable = true;
+		// 	tmp.tint = 0x000000;
+		// }
 
 		//the camera follows the player object
 		game.camera.follow(this.player, 0, 0.5, 0.5);
@@ -94,6 +96,11 @@ Play.prototype = {
 
 		//adding blend mode to bitmap (requires webgl on the browser)
 		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
+
+		// setup monster spawning timer
+        this.spawnMonsterTimer = game.time.create(false);	
+        this.spawnMonsterTimer.loop(30000, this.spawnMonster, this); 
+        this.spawnMonsterTimer.start();
 	},
 	collectkey1: function () {
 		//console.log('key 1 taken')
@@ -120,8 +127,8 @@ Play.prototype = {
 	},
 	update: function () {
 		this.move();
-		this.rayCast();
 		this.playMonsterSound();
+		this.rayCast();
 		game.physics.arcade.overlap(this.player, this.monster, this.colPE, null, this);
 		game.physics.arcade.collide(this.player, this.walls);
 		//map
@@ -190,6 +197,7 @@ Play.prototype = {
 		enemy.kill();
 		this.monsterSound[0].stop();
 		this.monsterSound[1].stop();
+		this.spawnMonsterTimer.stop();
 		game.state.start("GameOver");
 	},
 	//adapted from: https://gamemechanicexplorer.com/#raycasting-2
@@ -197,6 +205,7 @@ Play.prototype = {
 		//fill the entire light bitmap with a dark shadow color.
 		this.bitmap.context.fillStyle = 'rgb(0, 0, 0)';
 		this.bitmap.context.fillRect(game.camera.x, game.camera.y, game.camera.width + this.bitmapBleed, game.camera.height + this.bitmapBleed);
+		var rayLength = (this.lightSwitch)? game.rnd.integerInRange(-this.flickerAmount, this.LIGHT_FLICKER_BASE) : 0; //animates the light flickering, this will be used by how close you are to the monster
 		// Ray casting!
 		// Cast rays at intervals in a large circle around the light.
 		// Save all of the intersection points or ray end points if there was no intersection.
@@ -215,12 +224,18 @@ Play.prototype = {
 				points.push(ray.end);
 			}
 		}
+		// Draw circle of light with a soft edge
+		var gradient = this.bitmap.context.createRadialGradient(
+			this.player.x, this.player.y, this.usedLightRange * 0.75 + rayLength,
+			this.player.x, this.player.y, this.usedLightRange + rayLength);
+		gradient.addColorStop(0, 'rgba(255, 225, 200, 1.0)');
+		gradient.addColorStop(1, 'rgba(255, 225, 200, 0.0)');
 		// Connect the dots and fill in the shape, which are cones of light,
 		// with a bright white color. When multiplied with the background,
 		// the white color will allow the full color of the background to
 		// shine through.
 		this.bitmap.context.beginPath();
-		this.bitmap.context.fillStyle = "rgb(255, 255, 255)"; //from 0 to 255. 0 is pitch black, 255 is clear
+		this.bitmap.context.fillStyle = gradient;//"rgb(255, 255, 255)"; //from 0 to 255. 255 is pitch black, 0 is clear
 		this.bitmap.context.moveTo(points[0].x, points[0].y);
 		for (var i = 0; i < points.length; i++) {
 			this.bitmap.context.lineTo(points[i].x, points[i].y);
@@ -289,6 +304,7 @@ Play.prototype = {
 				this.monsterSound[0].volume = this.monsterSound[0].volume * volumePrcnt;
 				this.monsterSound[1].volume = 1 * volumePrcnt;
 			}
+			this.flickerAmount = this.LIGHT_FLICKER_BASE + volumePrcnt * 15;
 			if (!this.monsterSound[0].isPlaying) {
 				this.monsterSound[0].play('', 0, this.monsterSound[0].volume, true);
 			}
@@ -299,10 +315,17 @@ Play.prototype = {
 		else {
 			this.monsterSound[0].stop();
 			this.monsterSound[1].stop();
+			this.flickerAmount = this.LIGHT_FLICKER_BASE;
 		}
 	},
 	getVolPrcnt: function (distance) {
 		var compPrcnt = (distance / 320);
 		return (1 - compPrcnt < 0) ? 0 : 1 - compPrcnt;
+	},
+	spawnMonster : function () {
+		console.log("relocating creature...");
+		console.log("monster pos before reloc:" + this.monster.x + ", " + this.monster.y);
+		this.monster.x = game.rnd.integerInRange(32, game.camera.width - 32);
+		this.monster.y = game.rnd.integerInRange(32, game.camera.height - 32);
 	}
 };
