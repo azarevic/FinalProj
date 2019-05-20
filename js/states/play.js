@@ -1,13 +1,9 @@
 //Play state
 
 var Play = function (game) {
-	this.MAX_VELOCITY = 200;
-	this.MAX_LIGHT_RANGE = 200;
-	this.usedLightRange = this.MAX_LIGHT_RANGE; //one is MaxLight range, the other is the actual range used
 	this.EAR_RANGE = 1000;
 	this.inHearingRange = false;
 	this.monsterSound = [];
-	this.lightSwitch = true; //true = on false = off
 	this.bitmapBleed = 32; //how much bigger the bitmap is than the camera
 	this.LIGHT_FLICKER_BASE = 3;
 	this.flickerAmount = this.LIGHT_FLICKER_BASE;
@@ -32,9 +28,6 @@ Play.prototype = {
 		//adding player
 		this.player = new Player(game, "p1");
 		game.add.existing(this.player);
-
-		//adding cursor keys
-		cursors = game.input.keyboard.createCursorKeys();
 
 		// add enemy
 		this.monster = new Enemy(game, "");
@@ -126,7 +119,6 @@ Play.prototype = {
 		yellowEye.destroy();
 	},
 	update: function () {
-		this.move();
 		this.playMonsterSound();
 		this.rayCast();
 		game.physics.arcade.overlap(this.player, this.monster, this.colPE, null, this);
@@ -157,41 +149,6 @@ Play.prototype = {
 			statue.destroy();
 		}
 	},
-	move: function () {
-		//light on/off
-		if (game.input.keyboard.justPressed(Phaser.Keyboard.F)) {
-			this.lightSwitch = (this.lightSwitch == true) ? false : true;//negating its value makes it 1 or -1 rendering the else if below useless	
-			if (this.lightSwitch) {
-				this.usedLightRange = 200;
-				console.log("switched to 200");
-			}
-			else {
-				this.usedLightRange = 0;
-				console.log("switched to 0");
-			}
-		}
-		//moving x axis
-		if (cursors.right.isDown) {
-			this.player.body.velocity.x = this.MAX_VELOCITY;
-		}
-		else if (cursors.left.isDown) {
-			this.player.body.velocity.x = -this.MAX_VELOCITY;
-		}
-		else {
-			this.player.body.velocity.x = 0;
-		}
-
-		//moving y axis
-		if (cursors.up.isDown) {
-			this.player.body.velocity.y = -this.MAX_VELOCITY;
-		}
-		else if (cursors.down.isDown) {
-			this.player.body.velocity.y = this.MAX_VELOCITY;
-		}
-		else {
-			this.player.body.velocity.y = 0;
-		}
-	},
 	colPE: function (player, enemy) {
 		player.kill();
 		enemy.kill();
@@ -205,14 +162,14 @@ Play.prototype = {
 		//fill the entire light bitmap with a dark shadow color.
 		this.bitmap.context.fillStyle = 'rgb(0, 0, 0)';
 		this.bitmap.context.fillRect(game.camera.x, game.camera.y, game.camera.width + this.bitmapBleed, game.camera.height + this.bitmapBleed);
-		var rayLength = (this.lightSwitch)? game.rnd.integerInRange(-this.flickerAmount, this.LIGHT_FLICKER_BASE) : 0; //animates the light flickering, this will be used by how close you are to the monster
+		var rayLength = (this.player.lightSwitch)? game.rnd.integerInRange(-this.flickerAmount, this.LIGHT_FLICKER_BASE) : 0; //animates the light flickering, this will be used by how close you are to the monster
 		// Ray casting!
 		// Cast rays at intervals in a large circle around the light.
 		// Save all of the intersection points or ray end points if there was no intersection.
 		var points = [];
 		for (var a = 0; a < Math.PI * 2; a += Math.PI / 360) {
 			var ray = new Phaser.Line(this.player.x, this.player.y,
-				this.player.x + Math.cos(a) * this.usedLightRange, this.player.y + Math.sin(a) * this.usedLightRange);//last 2 parameters indicate length
+				this.player.x + Math.cos(a) * this.player.lightRange, this.player.y + Math.sin(a) * this.player.lightRange);//last 2 parameters indicate length
 
 			// Check if the ray intersected any walls
 			var intersect = this.getWallIntersection(ray);
@@ -226,8 +183,8 @@ Play.prototype = {
 		}
 		// Draw circle of light with a soft edge
 		var gradient = this.bitmap.context.createRadialGradient(
-			this.player.x, this.player.y, this.usedLightRange * 0.75 + rayLength,
-			this.player.x, this.player.y, this.usedLightRange + rayLength);
+			this.player.x, this.player.y, this.player.lightRange * 0.75 + rayLength,
+			this.player.x, this.player.y, this.player.lightRange + rayLength);
 		gradient.addColorStop(0, 'rgba(255, 225, 200, 1.0)');
 		gradient.addColorStop(1, 'rgba(255, 225, 200, 0.0)');
 		// Connect the dots and fill in the shape, which are cones of light,
