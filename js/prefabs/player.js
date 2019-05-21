@@ -8,15 +8,19 @@ function Player(game, key) {
     this.body.allowGravity = false;
     this.body.collideWorldBounds = true;
     this.anchor.setTo(0.5, 0.5);
+
     //for self containing
     //movement
-    this.MAX_VELOCITY = 200;
+    this.MAX_VELOCITY = 300;
     this.input = game.input;
     this.cursors = this.input.keyboard.createCursorKeys();
     //light
     this.lightSwitch = true;
     this.MAX_LIGHT_RANGE = 200;
-	this.lightRange = this.MAX_LIGHT_RANGE;
+    this.lightRange = this.MAX_LIGHT_RANGE;
+    //hearing
+    this.EAR_RANGE = 500;
+	this.inHearingRange = false;
 }
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor = Player;
@@ -48,7 +52,7 @@ Player.prototype.move = function () {
 }
 Player.prototype.checkLight = function () {
     if (this.input.keyboard.justPressed(Phaser.Keyboard.F)) {
-        this.lightSwitch = (this.lightSwitch == true) ? false : true;	
+        this.lightSwitch = (this.lightSwitch == true) ? false : true;
         if (this.lightSwitch) {
             this.lightRange = 200;
             console.log("switched to 200");
@@ -58,4 +62,47 @@ Player.prototype.checkLight = function () {
             console.log("switched to 0");
         }
     }
+}
+Player.prototype.listen = function (objs) {
+    objs.forEachAlive(function (item) {
+        this.playSound(item.sound, item.position);
+    }, this);
+}
+Player.prototype.playSound = function (sound, position) {
+    var xDistance = this.x - position.x;
+    var volumePrcnt;
+    xDistance = (xDistance < 0) ? -xDistance : xDistance; //abs value
+
+    //Takes care of panning
+    if (isInRange(this.position, position, this.EAR_RANGE)) {
+        volumePrcnt = this.getVolPrcnt(getDistanceBetween2Points(this.position, position));
+        if (this.x > position.x) {
+            sound[1].volume = (this.EAR_RANGE - xDistance) / this.EAR_RANGE;
+            //volumePrcnt = this.getVolPrcnt(getDistanceBetween2Points(this.position, this.monster.position));
+            sound[1].volume = sound[1].volume * volumePrcnt;
+            sound[0].volume = 1 * volumePrcnt;
+        }
+        else {
+            sound[0].volume = (this.EAR_RANGE - xDistance) / this.EAR_RANGE;
+            //volumePrcnt = this.getVolPrcnt(getDistanceBetween2Points(this.position, this.monster.position));
+            sound[0].volume = sound[0].volume * volumePrcnt;
+            sound[1].volume = 1 * volumePrcnt;
+        }
+        //this.flickerAmount = this.LIGHT_FLICKER_BASE + volumePrcnt * 15;
+        if (!sound[0].isPlaying) {
+            sound[0].play('', 0, sound[0].volume, true);
+        }
+        if (!sound[1].isPlaying) {
+            sound[1].play('', 0, sound[1].volume, true);
+        }
+    }
+    else {
+        sound[0].stop();
+        sound[1].stop();
+        //this.flickerAmount = this.LIGHT_FLICKER_BASE;
+    }
+}
+Player.prototype.getVolPrcnt = function (distance) {
+    var compPrcnt = (distance / this.EAR_RANGE);
+    return (1 - compPrcnt < 0) ? 0 : 1 - compPrcnt;
 }
