@@ -28,6 +28,7 @@ Load.prototype = {
 		game.load.path = "assets/audio/";
 		game.load.audio("monsterL", "monsterL.mp3");
 		game.load.audio("monsterR", "monsterR.mp3");
+		game.load.audio("chase", "ISeeU.mp3");
 	},
 	create: function() {
 		game.state.start("MainMenue");

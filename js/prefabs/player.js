@@ -19,10 +19,13 @@ function Player(game, key) {
     this.MAX_LIGHT_RANGE = 200;
     this.lightRange = this.MAX_LIGHT_RANGE;
     this.LIGHT_FLICKER_BASE = 3;
-	this.flickerAmount = this.LIGHT_FLICKER_BASE;
+    this.flickerAmount = this.LIGHT_FLICKER_BASE;
     //hearing
     this.EAR_RANGE = 500;
-	this.inHearingRange = false;
+    this.inHearingRange = false;
+    //music
+    this.chaseSong = game.add.audio("chase");
+    this.fading = true;
 }
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor = Player;
@@ -92,6 +95,7 @@ Player.prototype.playSound = function (sound, position, threat) {
         if (threat) {
             this.flickerAmount = this.LIGHT_FLICKER_BASE + volumePrcnt * 30;
         }
+        this.playChaseSong(position);
         if (!sound[0].isPlaying) {
             sound[0].play('', 0, sound[0].volume, true);
         }
@@ -103,9 +107,22 @@ Player.prototype.playSound = function (sound, position, threat) {
         sound[0].stop();
         sound[1].stop();
         this.flickerAmount = this.LIGHT_FLICKER_BASE;
+        this.fadeChaseSong();
     }
 }
 Player.prototype.getVolPrcnt = function (distance) {
     var compPrcnt = (distance / this.EAR_RANGE);
     return (1 - compPrcnt < 0) ? 0 : 1 - compPrcnt;
+}
+Player.prototype.playChaseSong = function (position) {
+    if (isInRange(this.position, position, this.lightRange)) {
+        this.chaseSong.play('', 0, 0.8, true, false);
+        this.fading = false;
+    }
+}
+Player.prototype.fadeChaseSong = function() {
+    if (!this.fading) {
+        this.chaseSong.fadeOut(1000);
+        this.fading = true;
+    }
 }
