@@ -34,6 +34,8 @@ var Enemy = function (game, key) {
     this.sound = [];
     this.sound[0] = game.add.audio("monsterL");
     this.sound[1] = game.add.audio("monsterR");
+    //monster name (already included in sprite class)
+    this.name = "monster";
 }
 
 Enemy.prototype = Object.create(Phaser.Sprite.prototype);

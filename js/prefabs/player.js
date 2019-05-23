@@ -18,6 +18,8 @@ function Player(game, key) {
     this.lightSwitch = true;
     this.MAX_LIGHT_RANGE = 200;
     this.lightRange = this.MAX_LIGHT_RANGE;
+    this.LIGHT_FLICKER_BASE = 3;
+	this.flickerAmount = this.LIGHT_FLICKER_BASE;
     //hearing
     this.EAR_RANGE = 500;
 	this.inHearingRange = false;
@@ -65,10 +67,11 @@ Player.prototype.checkLight = function () {
 }
 Player.prototype.listen = function (objs) {
     objs.forEachAlive(function (item) {
-        this.playSound(item.sound, item.position);
+        var threat = item.name == "monster";
+        this.playSound(item.sound, item.position, threat);
     }, this);
 }
-Player.prototype.playSound = function (sound, position) {
+Player.prototype.playSound = function (sound, position, threat) {
     var xDistance = this.x - position.x;
     var volumePrcnt;
     xDistance = (xDistance < 0) ? -xDistance : xDistance; //abs value
@@ -78,17 +81,17 @@ Player.prototype.playSound = function (sound, position) {
         volumePrcnt = this.getVolPrcnt(getDistanceBetween2Points(this.position, position));
         if (this.x > position.x) {
             sound[1].volume = (this.EAR_RANGE - xDistance) / this.EAR_RANGE;
-            //volumePrcnt = this.getVolPrcnt(getDistanceBetween2Points(this.position, this.monster.position));
             sound[1].volume = sound[1].volume * volumePrcnt;
             sound[0].volume = 1 * volumePrcnt;
         }
         else {
             sound[0].volume = (this.EAR_RANGE - xDistance) / this.EAR_RANGE;
-            //volumePrcnt = this.getVolPrcnt(getDistanceBetween2Points(this.position, this.monster.position));
             sound[0].volume = sound[0].volume * volumePrcnt;
             sound[1].volume = 1 * volumePrcnt;
         }
-        //this.flickerAmount = this.LIGHT_FLICKER_BASE + volumePrcnt * 15;
+        if (threat) {
+            this.flickerAmount = this.LIGHT_FLICKER_BASE + volumePrcnt * 30;
+        }
         if (!sound[0].isPlaying) {
             sound[0].play('', 0, sound[0].volume, true);
         }
@@ -99,7 +102,7 @@ Player.prototype.playSound = function (sound, position) {
     else {
         sound[0].stop();
         sound[1].stop();
-        //this.flickerAmount = this.LIGHT_FLICKER_BASE;
+        this.flickerAmount = this.LIGHT_FLICKER_BASE;
     }
 }
 Player.prototype.getVolPrcnt = function (distance) {

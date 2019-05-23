@@ -1,12 +1,9 @@
 //Play state
 
 var Play = function (game) {
-	// this.EAR_RANGE = 1000;
-	// this.inHearingRange = false;
-	//this.monsterSound = [];
 	this.bitmapBleed = 32; //how much bigger the bitmap is than the camera
-	this.LIGHT_FLICKER_BASE = 3;
-	this.flickerAmount = this.LIGHT_FLICKER_BASE;
+	// this.LIGHT_FLICKER_BASE = 3;
+	// this.flickerAmount = this.LIGHT_FLICKER_BASE;
 };
 Play.prototype = {
 	create: function () {
@@ -37,9 +34,6 @@ Play.prototype = {
 		game.add.existing(this.monster);
 
 		this.noisies.add(this.monster);
-		//adding TMP enemy audio
-		// this.monsterSound[0] = game.add.audio("monsterL");
-		// this.monsterSound[1] = game.add.audio("monsterR");
 
 		//adding some walls to test ray tracing
 		this.walls = game.add.group();
@@ -86,7 +80,6 @@ Play.prototype = {
 		//Create a bitmap texture for drawing light cones
 		//this should go at the bottom to cover all srpites 
 		//that will be in darkness
-		//console.log(game.world.width, game.world.height);
 		this.bitmap = game.add.bitmapData(game.world.width, game.world.height);
 		this.bitmap.context.fillStyle = 'rgb(255, 255, 255)';
 		this.bitmap.context.strokeStyle = 'rgb(255, 255, 255)';
@@ -124,7 +117,6 @@ Play.prototype = {
 		yellowEye.destroy();
 	},
 	update: function () {
-		//this.playMonsterSound();
 		this.player.listen(this.noisies);
 		this.rayCast();
 		game.physics.arcade.overlap(this.player, this.monster, this.colPE, null, this);
@@ -160,8 +152,6 @@ Play.prototype = {
 		enemy.kill();
 		this.monster.sound[0].stop();
 		this.monster.sound[1].stop();
-		// this.monsterSound[0].stop();
-		// this.monsterSound[1].stop();
 		this.spawnMonsterTimer.stop();
 		game.state.start("GameOver");
 	},
@@ -170,7 +160,7 @@ Play.prototype = {
 		//fill the entire light bitmap with a dark shadow color.
 		this.bitmap.context.fillStyle = 'rgb(0, 0, 0)';
 		this.bitmap.context.fillRect(game.camera.x, game.camera.y, game.camera.width + this.bitmapBleed, game.camera.height + this.bitmapBleed);
-		var rayLength = (this.player.lightSwitch)? game.rnd.integerInRange(-this.flickerAmount, this.LIGHT_FLICKER_BASE) : 0; //animates the light flickering, this will be used by how close you are to the monster
+		var rayLength = (this.player.lightSwitch)? game.rnd.integerInRange(-this.player.flickerAmount, this.player.LIGHT_FLICKER_BASE) : 0; //animates the light flickering, this will be used by how close you are to the monster
 		// Ray casting!
 		// Cast rays at intervals in a large circle around the light.
 		// Save all of the intersection points or ray end points if there was no intersection.
@@ -248,45 +238,6 @@ Play.prototype = {
 		}, this);
 		return closestIntersection;
 	},
-	// playMonsterSound: function () {
-	// 	var xDistance = this.player.x - this.monster.x;
-	// 	var volumePrcnt;
-	// 	xDistance = (xDistance < 0) ? -xDistance : xDistance; //abs value
-
-	// 	//Takes care of panning
-	// 	if (isInRange(this.player.position, this.monster.position, this.EAR_RANGE)) {
-	// 		//volumePrcnt = this.adjustMonsterVolumePrcnt();
-
-	// 		if (this.player.x > this.monster.x) {
-	// 			this.monsterSound[1].volume = (this.EAR_RANGE - xDistance) / this.EAR_RANGE;
-	// 			volumePrcnt = this.getVolPrcnt(getDistanceBetween2Points(this.player.position, this.monster.position));
-	// 			this.monsterSound[1].volume = this.monsterSound[1].volume * volumePrcnt;
-	// 			this.monsterSound[0].volume = 1 * volumePrcnt;
-	// 		}
-	// 		else {
-	// 			this.monsterSound[0].volume = (this.EAR_RANGE - xDistance) / this.EAR_RANGE;
-	// 			volumePrcnt = this.getVolPrcnt(getDistanceBetween2Points(this.player.position, this.monster.position));
-	// 			this.monsterSound[0].volume = this.monsterSound[0].volume * volumePrcnt;
-	// 			this.monsterSound[1].volume = 1 * volumePrcnt;
-	// 		}
-	// 		this.flickerAmount = this.LIGHT_FLICKER_BASE + volumePrcnt * 15;
-	// 		if (!this.monsterSound[0].isPlaying) {
-	// 			this.monsterSound[0].play('', 0, this.monsterSound[0].volume, true);
-	// 		}
-	// 		if (!this.monsterSound[1].isPlaying) {
-	// 			this.monsterSound[1].play('', 0, this.monsterSound[1].volume, true);
-	// 		}
-	// 	}
-	// 	else {
-	// 		this.monsterSound[0].stop();
-	// 		this.monsterSound[1].stop();
-	// 		this.flickerAmount = this.LIGHT_FLICKER_BASE;
-	// 	}
-	// },
-	// getVolPrcnt: function (distance) {
-	// 	var compPrcnt = (distance / 320);
-	// 	return (1 - compPrcnt < 0) ? 0 : 1 - compPrcnt;
-	// },
 	spawnMonster : function () {
 		console.log("relocating creature...");
 		console.log("monster pos before reloc:" + this.monster.x + ", " + this.monster.y);
