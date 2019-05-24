@@ -1,6 +1,6 @@
 //Player prefab
 
-function Player(game, key) {
+function Player(game, key, monster) {
     Phaser.Sprite.call(this, game, 96, 1448, key);
 
     //properties
@@ -26,6 +26,8 @@ function Player(game, key) {
     //music
     this.chaseSong = game.add.audio("chase");
     this.fading = true;
+    //monster activation
+    this.monster = monster;
 }
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor = Player;
@@ -94,14 +96,10 @@ Player.prototype.playSound = function (sound, position, threat) {
         }
         if (threat) {
             this.flickerAmount = this.LIGHT_FLICKER_BASE + volumePrcnt * 30;
+            this.playChaseSong(position);
         }
-        this.playChaseSong(position);
-        if (!sound[0].isPlaying) {
-            sound[0].play('', 0, sound[0].volume, true);
-        }
-        if (!sound[1].isPlaying) {
-            sound[1].play('', 0, sound[1].volume, true);
-        }
+        sound[0].play('', 0, sound[0].volume, true, false);
+        sound[1].play('', 0, sound[1].volume, true, false);
     }
     else {
         sound[0].stop();
@@ -118,6 +116,7 @@ Player.prototype.playChaseSong = function (position) {
     if (isInRange(this.position, position, this.lightRange)) {
         this.chaseSong.play('', 0, 0.8, true, false);
         this.fading = false;
+        this.monster.chase(this.position);
     }
 }
 Player.prototype.fadeChaseSong = function() {

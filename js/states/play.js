@@ -22,10 +22,6 @@ Play.prototype = {
 		//changin background color
 		game.stage.backgroundColor = "#000000";
 
-		//adding player
-		this.player = new Player(game, "p1");
-		game.add.existing(this.player);
-
 		//adding a group for wthe objs the player can hear
 		this.noisies = game.add.group();
 		this.noisies.enableBody = true;
@@ -34,6 +30,10 @@ Play.prototype = {
 		game.add.existing(this.monster);
 
 		this.noisies.add(this.monster);
+
+		//adding player
+		this.player = new Player(game, "p1", this.monster);
+		game.add.existing(this.player);
 
 		//adding some walls to test ray tracing
 		this.walls = game.add.group();
@@ -241,7 +241,7 @@ Play.prototype = {
 	spawnMonster : function () {
 		console.log("relocating creature...");
 		console.log("monster pos before reloc:" + this.monster.x + ", " + this.monster.y);
-		this.monster.x = game.rnd.integerInRange(32, game.camera.width - 32);
-		this.monster.y = game.rnd.integerInRange(32, game.camera.height - 32);
+		// this.monster.x = game.rnd.integerInRange(32, game.camera.width - 32);
+		// this.monster.y = game.rnd.integerInRange(32, game.camera.height - 32);
 	}
 };

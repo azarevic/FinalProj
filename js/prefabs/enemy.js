@@ -1,10 +1,11 @@
 // enemy constructor
 var Enemy = function (game, key) {
-    Phaser.Sprite.call(this, game, game.rnd.integerInRange(32, game.camera.width - 32), game.rnd.integerInRange(32, game.camera.height - 32), key);
+    //Phaser.Sprite.call(this, game, game.rnd.integerInRange(32, game.camera.width - 32), game.rnd.integerInRange(32, game.camera.height - 32), key);
+    Phaser.Sprite.call(this, game, 640, 920, key);
     // physics
     game.physics.enable(this, Phaser.Physics.ARCADE);
     this.baseSpeed = 50;
-    this.body.velocity.x = this.baseSpeed;
+    //this.body.velocity.x = this.baseSpeed;
     //do stuff if the monster is in or out of the world
     this.checkWorldBounds = true;
     this.events.onEnterBounds.add(function () {
@@ -40,3 +41,22 @@ var Enemy = function (game, key) {
 
 Enemy.prototype = Object.create(Phaser.Sprite.prototype);
 Enemy.prototype.constructor = Enemy;
+Enemy.prototype.chase = function(position) {
+    var angle = calcAngleDegrees(position, this.position);
+    var absAngle ;
+    var angleSign = (angle < 0) ? -1: 1;
+    if (angle < 0) {absAngle = -angle; angleSign = -1;}
+    else {absAngle = angle; angleSign = 1;}
+    
+    if (absAngle <= 45) {
+        this.body.velocity.y = this.baseSpeed;
+        
+    }
+    else if (absAngle >= 135) {
+        this.body.velocity.y = -this.baseSpeed;
+    }
+    else {
+        this.body.velocity.y = 0;
+        this.body.velocity.x = this.baseSpeed * angleSign;
+    }
+}
