@@ -4,21 +4,22 @@ var Enemy = function (game, key) {
     Phaser.Sprite.call(this, game, 640, 920, key);
     // physics
     game.physics.enable(this, Phaser.Physics.ARCADE);
-    this.baseSpeed = 50;
-    //this.body.velocity.x = this.baseSpeed;
+    this.BASE_SPEED = 50;
+    this.speed = this.BASE_SPEED;
+    //this.body.velocity.x = this.speed;
     //do stuff if the monster is in or out of the world
     this.checkWorldBounds = true;
     this.events.onEnterBounds.add(function () {
         //this.revive();
-        var speed = game.rnd.between(-2, 2);
-        console.log("monster inbound " + speed);
-        if (speed > 0) {
-            this.body.velocity.x = (speed > 1) ? this.baseSpeed : -this.baseSpeed;
+        var chance = game.rnd.between(-2, 2);
+        console.log("monster inbound " + chance);
+        if (chance > 0) {
+            this.body.velocity.x = (chance > 1) ? this.speed : -this.speed;
             this.body.velocity.y = 0;
         }
         else {
             this.body.velocity.x = 0;
-            this.body.velocity.y = (speed < -1) ? this.baseSpeed : -this.baseSpeed;
+            this.body.velocity.y = (chance < -1) ? this.speed : -this.speed;
         }
     }, this);
     this.events.onOutOfBounds.add(function () {
@@ -54,15 +55,17 @@ Enemy.prototype.chase = function (position) {
     if (angle < 0) { absAngle = -angle; angleSign = -1; }
     else { absAngle = angle; angleSign = 1; }
 
+    this.speed = 3 * this.BASE_SPEED;
+
     if (absAngle <= 45) {
-        this.body.velocity.y = this.baseSpeed;
+        this.body.velocity.y = this.speed;
     }
     else if (absAngle >= 135) {
-        this.body.velocity.y = -this.baseSpeed;
+        this.body.velocity.y = -this.speed;
     }
     else {
         this.body.velocity.y = 0;
-        this.body.velocity.x = this.baseSpeed * angleSign;
+        this.body.velocity.x = this.speed * angleSign;
     }
 }
 Enemy.prototype.startChase = function (position) {
@@ -71,4 +74,5 @@ Enemy.prototype.startChase = function (position) {
 }
 Enemy.prototype.stopChase = function () {
     this.chaseFlag = false;
+    this.speed = this.BASE_SPEED;
 }
