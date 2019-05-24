@@ -27,6 +27,8 @@ var Enemy = function (game, key) {
     }, this);
     // movement
     this.anchor.set(0.5);
+    this.chaseFlag = false;
+    this.target;
     // size asset
     this.scale.x = 0.2;
     this.scale.y = 0.2;
@@ -38,19 +40,22 @@ var Enemy = function (game, key) {
     //monster name (already included in sprite class)
     this.name = "monster";
 }
-
 Enemy.prototype = Object.create(Phaser.Sprite.prototype);
 Enemy.prototype.constructor = Enemy;
-Enemy.prototype.chase = function(position) {
+Enemy.prototype.update = function () {
+    if (this.chaseFlag) {
+        this.chase(this.target);
+    }
+}
+Enemy.prototype.chase = function (position) {
     var angle = calcAngleDegrees(position, this.position);
-    var absAngle ;
-    var angleSign = (angle < 0) ? -1: 1;
-    if (angle < 0) {absAngle = -angle; angleSign = -1;}
-    else {absAngle = angle; angleSign = 1;}
-    
+    var absAngle;
+    var angleSign;
+    if (angle < 0) { absAngle = -angle; angleSign = -1; }
+    else { absAngle = angle; angleSign = 1; }
+
     if (absAngle <= 45) {
         this.body.velocity.y = this.baseSpeed;
-        
     }
     else if (absAngle >= 135) {
         this.body.velocity.y = -this.baseSpeed;
@@ -59,4 +64,11 @@ Enemy.prototype.chase = function(position) {
         this.body.velocity.y = 0;
         this.body.velocity.x = this.baseSpeed * angleSign;
     }
+}
+Enemy.prototype.startChase = function (position) {
+    this.chaseFlag = true;
+    this.target = position;
+}
+Enemy.prototype.stopChase = function () {
+    this.chaseFlag = false;
 }

@@ -241,7 +241,7 @@ Play.prototype = {
 	spawnMonster : function () {
 		console.log("relocating creature...");
 		console.log("monster pos before reloc:" + this.monster.x + ", " + this.monster.y);
-		// this.monster.x = game.rnd.integerInRange(32, game.camera.width - 32);
-		// this.monster.y = game.rnd.integerInRange(32, game.camera.height - 32);
+		this.monster.x = game.rnd.integerInRange(32, game.camera.width - 32);
+		this.monster.y = game.rnd.integerInRange(32, game.camera.height - 32);
 	}
 };

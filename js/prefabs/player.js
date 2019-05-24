@@ -116,11 +116,12 @@ Player.prototype.playChaseSong = function (position) {
     if (isInRange(this.position, position, this.lightRange)) {
         this.chaseSong.play('', 0, 0.8, true, false);
         this.fading = false;
-        this.monster.chase(this.position);
+        this.monster.startChase(this.position);
     }
 }
 Player.prototype.fadeChaseSong = function() {
     if (!this.fading) {
+        this.monster.stopChase();
         this.chaseSong.fadeOut(1000);
         this.fading = true;
     }
