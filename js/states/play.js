@@ -87,11 +87,6 @@ Play.prototype = {
 
 		//adding blend mode to bitmap (requires webgl on the browser)
 		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
-
-		// setup monster spawning timer
-        this.spawnMonsterTimer = game.time.create(false);	
-        this.spawnMonsterTimer.loop(30000, this.spawnMonster, this); 
-        this.spawnMonsterTimer.start();
 	},
 	collectkey1: function () {
 		//console.log('key 1 taken')
@@ -238,10 +233,4 @@ Play.prototype = {
 		}, this);
 		return closestIntersection;
 	},
-	spawnMonster : function () {
-		console.log("relocating creature...");
-		console.log("monster pos before reloc:" + this.monster.x + ", " + this.monster.y);
-		this.monster.x = game.rnd.integerInRange(32, game.camera.width - 32);
-		this.monster.y = game.rnd.integerInRange(32, game.camera.height - 32);
-	}
 };

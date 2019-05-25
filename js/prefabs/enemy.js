@@ -1,12 +1,12 @@
 // enemy constructor
 var Enemy = function (game, key) {
-    //Phaser.Sprite.call(this, game, game.rnd.integerInRange(32, game.camera.width - 32), game.rnd.integerInRange(32, game.camera.height - 32), key);
-    Phaser.Sprite.call(this, game, 640, 920, key);
+    Phaser.Sprite.call(this, game, game.rnd.integerInRange(game.camera.x + 32, game.camera.width - 32), game.rnd.integerInRange(game.camera.y + 32, game.camera.height - 32), key);
+    //Phaser.Sprite.call(this, game, 640, 920, key);
     // physics
     game.physics.enable(this, Phaser.Physics.ARCADE);
     this.BASE_SPEED = 50;
     this.speed = this.BASE_SPEED;
-    //this.body.velocity.x = this.speed;
+    this.body.velocity.x = this.speed;
     //do stuff if the monster is in or out of the world
     this.checkWorldBounds = true;
     this.events.onEnterBounds.add(function () {
@@ -24,6 +24,7 @@ var Enemy = function (game, key) {
     }, this);
     this.events.onOutOfBounds.add(function () {
         console.log("monster out");
+        this.respawn();
         //this.kill();
     }, this);
     // movement
@@ -75,4 +76,11 @@ Enemy.prototype.startChase = function (position) {
 Enemy.prototype.stopChase = function () {
     this.chaseFlag = false;
     this.speed = this.BASE_SPEED;
+}
+Enemy.prototype.respawn = function () {
+    console.log("relocating creature...");
+    this.position.x = game.rnd.integerInRange(game.camera.x + 32, game.camera.width - 32);
+    this.position.y = game.rnd.integerInRange(game.camera.y + 32, game.camera.height - 32);
+    console.log("monster pos:" + this.position.x + ", " + this.position.y);
+
 }
