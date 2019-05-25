@@ -63,3 +63,6 @@ function preload() {
 	//to center game
 	game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 }
+function calcAngleDegrees(f, i) {//final - initial
+	return Math.atan2(f.x - i.x, f.y - i.y) * 180 / Math.PI;
+}
