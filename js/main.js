@@ -66,20 +66,13 @@ function preload() {
 function calcAngleDegrees(f, i) {//final - initial
 	return Math.atan2(f.x - i.x, f.y - i.y) * 180 / Math.PI;
 }
-var keys = [
-	"blueEye", 
-	"yellowEye", 
-	"key",
-	"door",
-	"door", 
-	"statue"];
-
-
-
-var positions = [
-	new Phaser.Point(1480, 1150), 
-	new Phaser.Point(250, 950), 
-	new Phaser.Point(360, 256), 
-	new Phaser.Point(1312, 448),
-	new Phaser.Point(1312, 448),
-	new Phaser.Point(1312, 448)];
+//array sourcery
+var objs = [
+	0, "statue", new Phaser.Point(1312, 448), 
+	1, "blueEye", new Phaser.Point(1480, 1150),
+	1, "yellowEye", new Phaser.Point(250, 950),
+	0, "door", new Phaser.Point(832, 128),
+	2, "key", new Phaser.Point(360, 256),
+	0, "door", new Phaser.Point(416, 1248),
+	3, "key", new Phaser.Point(1312, 448)									//placeHolder for a droped key
+];

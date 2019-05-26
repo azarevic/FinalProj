@@ -1,7 +1,10 @@
-var key = function (game, key, xpos, ypos, sound, names, ids) {
-    myObj.call(game, key, xpos, ypos, sound);
-    this.names = names;
-    this.ids = ids;
+var lock = function (game, key, xpos, ypos) {
+    myObj.call(this, game, key, xpos, ypos);
+    this.ids = [];
 }
-key.prototype = Object.create(myObj.prototype);
-key.prototype.constructor = key;
+lock.prototype = Object.create(myObj.prototype);
+lock.prototype.constructor = lock;
+lock.prototype.addId = function(id) {
+    //this.ids.add(id);
+    this.ids.push(id);
+}

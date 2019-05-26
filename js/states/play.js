@@ -22,9 +22,12 @@ Play.prototype = {
 		//changin background color
 		game.stage.backgroundColor = "#000000";
 
-		//adding a group for wthe objs the player can hear
+		//adding a group for the objs the player can hear
 		this.noisies = game.add.group();
 		this.noisies.enableBody = true;
+		//group for solid objects
+		this.solids = game.add.group();
+		this.solids.enableBody = true;
 		// add enemy
 		this.monster = new Enemy(game, "p1");
 		game.add.existing(this.monster);
@@ -38,6 +41,7 @@ Play.prototype = {
 		//adding some walls to test ray tracing
 		this.walls = game.add.group();
 		this.walls.enableBody = true;
+
 		// var i, x, y, tmp;
 		// for (i = 0; i < 4; i++) {
 		// 	x = i * game.width / 4 + 50;
@@ -51,32 +55,32 @@ Play.prototype = {
 		//the camera follows the player object
 		game.camera.follow(this.player, 0, 0.5, 0.5);
 		//gives enables physics on jewels, keys, doors, and statue
-		blueEye = game.add.sprite(1480, 1150, 'blueEye');
-		game.physics.enable(blueEye);
-		blueEye.enableBody = true;
-		yellowEye = game.add.sprite(250, 950, 'yellowEye');
-		game.physics.enable(yellowEye);
-		yellowEye.enableBody = true;
-		key1 = game.add.sprite(1312, 448, 'key');
-		game.physics.enable(key1);
-		key1.enableBody = true;
-		key2 = game.add.sprite(360, 256, 'key');
-		game.physics.enable(key2);
-		key2.enableBody = true;
-		statue = game.add.sprite(1312, 448, 'statue');
-		game.physics.enable(statue);
-		statue.enableBody = true;
-		statue.body.immovable = true;
-		statue.scale.setTo(1.5, 1);
-		door1 = game.add.sprite(416, 1248, 'door');
-		game.physics.enable(door1);
-		door1.enableBody = true;
-		door1.body.immovable = true;
-		door2 = game.add.sprite(832, 128, 'door');
-		game.physics.enable(door2);
-		door2.enableBody = true;
-		door2.body.immovable = true;
-
+		// blueEye = game.add.sprite(1480, 1150, 'blueEye');
+		// game.physics.enable(blueEye);
+		// blueEye.enableBody = true;
+		// yellowEye = game.add.sprite(250, 950, 'yellowEye');
+		// game.physics.enable(yellowEye);
+		// yellowEye.enableBody = true;
+		// key1 = game.add.sprite(1312, 448, 'key');
+		// game.physics.enable(key1);
+		// key1.enableBody = true;
+		// key2 = game.add.sprite(360, 256, 'key');
+		// game.physics.enable(key2);
+		// key2.enableBody = true;
+		// statue = game.add.sprite(1312, 448, 'statue');
+		// game.physics.enable(statue);
+		// statue.enableBody = true;
+		// statue.body.immovable = true;
+		// statue.scale.setTo(1.5, 1);
+		// door1 = game.add.sprite(416, 1248, 'door');
+		// game.physics.enable(door1);
+		// door1.enableBody = true;
+		// door1.body.immovable = true;
+		// door2 = game.add.sprite(832, 128, 'door');
+		// game.physics.enable(door2);
+		// door2.enableBody = true;
+		// door2.body.immovable = true;
+		this.addObjects();
 		//Create a bitmap texture for drawing light cones
 		//this should go at the bottom to cover all srpites 
 		//that will be in darkness
@@ -121,33 +125,33 @@ Play.prototype = {
 
 		//map & object collision
 		game.physics.arcade.collide(this.player, this.wallsLayer);
+		game.physics.arcade.collide(this.player, this.solids);
 		//stops player from going trhough doors and statue
-		game.physics.arcade.collide(this.player, statue);
-		game.physics.arcade.collide(this.player, door1);
-		game.physics.arcade.collide(this.player, door2);
+		// game.physics.arcade.collide(this.player, statue);
+		// game.physics.arcade.collide(this.player, door1);
+		// game.physics.arcade.collide(this.player, door2);
 		//picks up jewels or keys if player overlaps
-		game.physics.arcade.overlap(this.player, blueEye, this.collectBlueEye, null, this);
-		game.physics.arcade.overlap(this.player, yellowEye, this.collectYellowEye, null, this);
-		game.physics.arcade.overlap(this.player, key1, this.collectkey1, null, this);
-		game.physics.arcade.overlap(this.player, key2, this.collectkey2, null, this);
+		// game.physics.arcade.overlap(this.player, blueEye, this.collectBlueEye, null, this);
+		// game.physics.arcade.overlap(this.player, yellowEye, this.collectYellowEye, null, this);
+		// game.physics.arcade.overlap(this.player, key1, this.collectkey1, null, this);
+		// game.physics.arcade.overlap(this.player, key2, this.collectkey2, null, this);
 		//if player have the keys or jewels, it opens doors and destroys statue
-		if (keys2 == true && this.player.x > door1.x && this.player.y > door1.y) {
-			door1.destroy();
-		}
-		if (keys1 == true && this.player.x > door2.x && this.player.x < (door2.x + 100) && this.player.y > door2.y) {
-			door2.destroy();
-		}
+		// if (keys2 == true && this.player.x > door1.x && this.player.y > door1.y) {
+		// 	door1.destroy();
+		// }
+		// if (keys1 == true && this.player.x > door2.x && this.player.x < (door2.x + 100) && this.player.y > door2.y) {
+		// 	door2.destroy();
+		// }
 
-		if (yellowJewel == true && this.player.x > 1248 && this.player.x < 1344 && this.player.y > 448 && this.player.y < 480) {
-			statue.destroy();
-		}
+		// if (yellowJewel == true && this.player.x > 1248 && this.player.x < 1344 && this.player.y > 448 && this.player.y < 480) {
+		// 	statue.destroy();
+		// }
 	},
 	colPE: function (player, enemy) {
 		player.kill();
 		enemy.kill();
 		this.monster.sound[0].stop();
 		this.monster.sound[1].stop();
-		this.spawnMonsterTimer.stop();
 		game.state.start("GameOver");
 	},
 	//adapted from: https://gamemechanicexplorer.com/#raycasting-2
@@ -155,7 +159,7 @@ Play.prototype = {
 		//fill the entire light bitmap with a dark shadow color.
 		this.bitmap.context.fillStyle = 'rgb(0, 0, 0)';
 		this.bitmap.context.fillRect(game.camera.x, game.camera.y, game.camera.width + this.bitmapBleed, game.camera.height + this.bitmapBleed);
-		var rayLength = (this.player.lightSwitch)? game.rnd.integerInRange(-this.player.flickerAmount, this.player.LIGHT_FLICKER_BASE) : 0; //animates the light flickering, this will be used by how close you are to the monster
+		var rayLength = (this.player.lightSwitch) ? game.rnd.integerInRange(-this.player.flickerAmount, this.player.LIGHT_FLICKER_BASE) : 0; //animates the light flickering, this will be used by how close you are to the monster
 		// Ray casting!
 		// Cast rays at intervals in a large circle around the light.
 		// Save all of the intersection points or ray end points if there was no intersection.
@@ -233,4 +237,33 @@ Play.prototype = {
 		}, this);
 		return closestIntersection;
 	},
+	addObjects: function () {
+		var j, i;
+		var sounds = [game.add.audio("keyL"), game.add.audio("keyR")];
+		var obj;
+		for (i = 0, j = -1; i < objs.length; i += 3) {
+			if (objs[i] == 0) {
+				//ids.add(objs[i]);
+
+				obj = new lock(game, objs[i + 1], objs[i + 2].x, objs[i + 2].y);
+				game.add.existing(obj);
+				this.solids.add(obj);
+				j++;
+			}
+			else {
+				if (this.solids.children[j] != undefined) {
+					console.log(objs[i]);
+					//sounds = [game.add.audio("keyL"), game.add.audio("keyR")];
+					obj = new key(game, objs[i + 1], objs[i + 2].x, objs[i + 2].y, sounds, objs[i]);
+					game.add.existing(obj);
+					//this.noisies.add(obj);
+					//tmpSolids[j].addId(objs[i]);
+					this.solids.getChildAt(j).addId(objs[i]);
+				}
+				else {
+					console.log("OBJS ARRAY ERROR: a null solid found");
+				}
+			}
+		}
+	}
 };
