@@ -8,7 +8,7 @@ function Player(game, key, monster) {
     this.body.allowGravity = false;
     this.body.collideWorldBounds = true;
     this.anchor.setTo(0.5, 0.5);
-
+    this.name = "player";
     //movement
     this.MAX_VELOCITY = 300;
     this.input = game.input;
@@ -136,4 +136,9 @@ Player.prototype.pickUpItem = function(item) {
     }
     this.pickUpSound.play('', 0, 0.8, false, false);
     item.kill();
+}
+Player.prototype.displayInventory = function () {
+    for (let i = 0; i < this.inventory.length; i++) {
+        console.log("	" + this.inventory[i]);
+    }
 }

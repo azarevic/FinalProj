@@ -71,8 +71,8 @@ var objs = [
 	0, "statue", new Phaser.Point(1312, 448), 
 	1, "blueEye", new Phaser.Point(1480, 1150),
 	1, "yellowEye", new Phaser.Point(250, 950),
-	0, "door", new Phaser.Point(832, 128),
-	2, "key", new Phaser.Point(360, 256),
 	0, "door", new Phaser.Point(416, 1248),
+	2, "key", new Phaser.Point(360, 256),
+	0, "door", new Phaser.Point(832, 128),
 	3, "key", new Phaser.Point(1312, 448)									//placeHolder for a droped key
 ];

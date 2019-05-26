@@ -26,10 +26,10 @@ Play.prototype = {
 		this.noiseMakers = game.add.group();
 		this.noiseMakers.enableBody = true;
 		//group for solid objects
-		this.locks = game.add.group();
-		this.locks.enableBody = true;
 		this.keys = game.add.group();
 		this.keys.enableBody = true;
+		this.locks = game.add.group();
+		this.locks.enableBody = true;
 
 		// add enemy
 		this.monster = new Enemy(game, "p1");
@@ -230,7 +230,7 @@ Play.prototype = {
 	},
 	collectItem: function (player, item) {
 		player.pickUpItem(item);
-		this.displayInventory(player.inventory);
+		this.player.displayInventory();
 	},
 	displayKeysNeeded: function (group) { //debug only
 		group.forEachAlive(function (item) {
@@ -240,9 +240,4 @@ Play.prototype = {
 			}
 		}, this);
 	},
-	displayInventory: function (inventory) {
-		for (let i = 0; i < inventory.length; i++) {
-			console.log("	" + inventory[i]);
-		}
-	}
 };
