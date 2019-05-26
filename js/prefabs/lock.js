@@ -8,7 +8,6 @@ var lock = function (game, key, xpos, ypos) {
 lock.prototype = Object.create(myObj.prototype);
 lock.prototype.constructor = lock;
 lock.prototype.addId = function(id) {
-    //this.ids.add(id);
     this.ids.push(id);
 }
 lock.prototype.confirmKeys = function(player) {

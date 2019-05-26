@@ -1,9 +1,7 @@
 //Play state
 
 var Play = function (game) {
-	this.bitmapBleed = 32; //how much bigger the bitmap is than the camera
-	// this.LIGHT_FLICKER_BASE = 3;
-	// this.flickerAmount = this.LIGHT_FLICKER_BASE;
+	this.bitmapBleed = 64; //how much bigger the bitmap is than the camera
 };
 Play.prototype = {
 	create: function () {
@@ -34,7 +32,6 @@ Play.prototype = {
 		// add enemy
 		this.monster = new Enemy(game, "p1");
 		game.add.existing(this.monster);
-
 		this.noiseMakers.add(this.monster);
 
 		//adding player
@@ -59,61 +56,18 @@ Play.prototype = {
 		//adding blend mode to bitmap (requires webgl on the browser)
 		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
 	},
-	collectkey1: function () {
-		//console.log('key 1 taken')
-		keys1 = true;
-		key1.destroy();
-		//console.log('itll say true if you got the thing ' + blueJewel);
-	},
-	collectkey2: function () {
-		//console.log('key 2 taken')
-		keys2 = true;
-		key2.destroy();
-		//console.log('itll say true if you got the thing ' + blueJewel);
-	},
-	collectBlueEye: function () {
-		//console.log('they overlap')
-		blueJewel = true;
-		blueEye.destroy();
-		//console.log('itll say true if you got the thing ' + blueJewel);
-	},
-	collectYellowEye: function () {
-		//console.log('they overlap')
-		yellowJewel = true;
-		yellowEye.destroy();
-	},
 	update: function () {
 		this.player.listen(this.noiseMakers);
 		this.rayCast();
 		game.physics.arcade.overlap(this.player, this.monster, this.colPE, null, this);
-		game.physics.arcade.collide(this.player, this.walls);
 		//map
 		game.physics.arcade.collide(this.player, this.mapLayer);
 
 		//map & object collision
+		game.physics.arcade.collide(this.player, this.walls);
 		game.physics.arcade.collide(this.player, this.wallsLayer);
 		game.physics.arcade.collide(this.player, this.locks);
 		game.physics.arcade.overlap(this.player, this.keys, this.collectItem, null, this);
-		//stops player from going trhough doors and statue
-		// game.physics.arcade.collide(this.player, statue);
-		// game.physics.arcade.collide(this.player, door1);
-		// game.physics.arcade.collide(this.player, door2);
-		//picks up jewels or keys if player overlaps
-		// game.physics.arcade.overlap(this.player, blueEye, this.collectBlueEye, null, this);
-		// game.physics.arcade.overlap(this.player, yellowEye, this.collectYellowEye, null, this);
-		// game.physics.arcade.overlap(this.player, key1, this.collectkey1, null, this);
-		// game.physics.arcade.overlap(this.player, key2, this.collectkey2, null, this);
-		//if player have the keys or jewels, it opens doors and destroys statue
-		// if (keys2 == true && this.player.x > door1.x && this.player.y > door1.y) {
-		// 	door1.destroy();
-		// }
-		// if (keys1 == true && this.player.x > door2.x && this.player.x < (door2.x + 100) && this.player.y > door2.y) {
-		// 	door2.destroy();
-		// }
-
-		// if (yellowJewel == true && this.player.x > 1248 && this.player.x < 1344 && this.player.y > 448 && this.player.y < 480) {
-		// 	statue.destroy();
-		// }
 	},
 	colPE: function (player, enemy) {
 		player.kill();
@@ -126,7 +80,7 @@ Play.prototype = {
 	rayCast: function () {
 		//fill the entire light bitmap with a dark shadow color.
 		this.bitmap.context.fillStyle = 'rgb(0, 0, 0)';
-		this.bitmap.context.fillRect(game.camera.x, game.camera.y, game.camera.width + this.bitmapBleed, game.camera.height + this.bitmapBleed);
+		this.bitmap.context.fillRect(game.camera.x - this.bitmapBleed / 2, game.camera.y - this.bitmapBleed / 2, game.camera.width + this.bitmapBleed, game.camera.height + this.bitmapBleed);
 		var rayLength = (this.player.lightSwitch) ? game.rnd.integerInRange(-this.player.flickerAmount, this.player.LIGHT_FLICKER_BASE) : 0; //animates the light flickering, this will be used by how close you are to the monster
 		// Ray casting!
 		// Cast rays at intervals in a large circle around the light.
@@ -223,7 +177,7 @@ Play.prototype = {
 					this.locks.getChildAt(j).addId(objs[i]);
 				}
 				else {
-					console.log("OBJS ARRAY ERROR: a null solid found");
+					console.log("OBJS ARRAY ERROR: an undefined lock found");
 				}
 			}
 		}
@@ -232,7 +186,7 @@ Play.prototype = {
 		player.pickUpItem(item);
 		this.player.displayInventory();
 	},
-	displayKeysNeeded: function (group) { //debug only
+	displayKeysNeeded: function (group) {
 		group.forEachAlive(function (item) {
 			console.log(item);
 			for (let i = 0; i < item.ids.length; i++) {
