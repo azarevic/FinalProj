@@ -9,7 +9,6 @@ function Player(game, key, monster) {
     this.body.collideWorldBounds = true;
     this.anchor.setTo(0.5, 0.5);
 
-    //for self containing
     //movement
     this.MAX_VELOCITY = 300;
     this.input = game.input;
@@ -25,9 +24,12 @@ function Player(game, key, monster) {
     this.inHearingRange = false;
     //music
     this.chaseSong = game.add.audio("chase");
+    this.pickUpSound = game.add.audio("pickUp");
     this.fading = true;
     //monster activation
     this.monster = monster;
+    //inventory
+    this.inventory = [];
 }
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor = Player;
@@ -125,4 +127,13 @@ Player.prototype.fadeChaseSong = function() {
         this.chaseSong.fadeOut(1000);
         this.fading = true;
     }
+}
+Player.prototype.pickUpItem = function(item) {
+    console.log("Item collected: " + item.name);
+    this.inventory.push(item.id);
+    if (this.inventory.length > 1) {
+        this.inventory.sort(function(a, b){return a - b});
+    }
+    this.pickUpSound.play('', 0, 0.8, false, false);
+    item.kill();
 }
