@@ -30,6 +30,8 @@ function Player(game, key, monster) {
     this.monster = monster;
     //inventory
     this.inventory = [];
+    this.inventoryDisplay = game.add.group();
+    this.camOffSet = 32;
 }
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor = Player;
@@ -64,10 +66,12 @@ Player.prototype.checkLight = function () {
         this.lightSwitch = (this.lightSwitch == true) ? false : true;
         if (this.lightSwitch) {
             this.lightRange = 200;
+            this.tint = 0xffffff;
             console.log("switched to 200");
         }
         else {
             this.lightRange = 0;
+            this.tint = 0x000000;
             console.log("switched to 0");
         }
     }
@@ -135,7 +139,22 @@ Player.prototype.pickUpItem = function(item) {
         this.inventory.sort(function(a, b){return a - b});
     }
     this.pickUpSound.play('', 0, 0.8, false, false);
-    item.kill();
+    this.addToInventDisplay(item);
+}
+Player.prototype.addToInventDisplay = function(item) {
+    item.fixedToCamera = true;
+    item.cameraOffset.setTo(this.camOffSet * this.inventory.length, this.camOffSet);
+    item.body.checkCollision.none = true;
+    this.inventoryDisplay.add(item);
+}
+Player.prototype.shiftInventDisplay = function(index) {
+    var count = 0;
+    this.inventoryDisplay.forEachAlive(function (item) {
+        if (count == index) {
+            item.cameraOffset.setTo(item.position.x - this.camOffSet, this.camOffSet);
+        }
+        count++;
+    }, this);
 }
 Player.prototype.displayInventory = function () {
     for (let i = 0; i < this.inventory.length; i++) {

@@ -34,16 +34,10 @@ Play.prototype = {
 		game.add.existing(this.monster);
 		this.noiseMakers.add(this.monster);
 
-		//adding player
-		this.player = new Player(game, "p1", this.monster);
-		game.add.existing(this.player);
-
 		//adding some walls to test ray tracing
 		this.walls = game.add.group();
 		this.walls.enableBody = true;
 
-		//the camera follows the player object
-		game.camera.follow(this.player, 0, 0.5, 0.5);
 		this.addObjects();
 		//Create a bitmap texture for drawing light cones
 		//this should go at the bottom to cover all srpites 
@@ -52,6 +46,12 @@ Play.prototype = {
 		this.bitmap.context.fillStyle = 'rgb(255, 255, 255)';
 		this.bitmap.context.strokeStyle = 'rgb(255, 255, 255)';
 		var lightBitmap = game.add.image(0, 0, this.bitmap);
+
+		//adding player
+		this.player = new Player(game, "p1", this.monster);
+		game.add.existing(this.player);
+		//the camera follows the player object
+		game.camera.follow(this.player, 0, 0.5, 0.5);
 
 		//adding blend mode to bitmap (requires webgl on the browser)
 		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
@@ -79,7 +79,7 @@ Play.prototype = {
 	//adapted from: https://gamemechanicexplorer.com/#raycasting-2
 	rayCast: function () {
 		//fill the entire light bitmap with a dark shadow color.
-		this.bitmap.context.fillStyle = 'rgb(0, 0, 0)';
+		this.bitmap.context.fillStyle = 'rgb(0, 0, 0)';//'rgb(255, 255, 255)';
 		this.bitmap.context.fillRect(game.camera.x - this.bitmapBleed / 2, game.camera.y - this.bitmapBleed / 2, game.camera.width + this.bitmapBleed, game.camera.height + this.bitmapBleed);
 		var rayLength = (this.player.lightSwitch) ? game.rnd.integerInRange(-this.player.flickerAmount, this.player.LIGHT_FLICKER_BASE) : 0; //animates the light flickering, this will be used by how close you are to the monster
 		// Ray casting!
