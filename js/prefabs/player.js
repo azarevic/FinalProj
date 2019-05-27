@@ -136,6 +136,9 @@ Player.prototype.pickUpItem = function(item) {
     }
     this.pickUpSound.play('', 0, 0.8, false, false);
     item.kill();
+    // item.position.x = game.camera.x + 32;
+    // item.position.y = game.camera.y + 32;
+    // item.fixedToCamera = true;
 }
 Player.prototype.displayInventory = function () {
     for (let i = 0; i < this.inventory.length; i++) {
