@@ -82,5 +82,4 @@ Enemy.prototype.respawn = function () {
     this.position.x = game.rnd.integerInRange(game.camera.x + 32, game.camera.width - 32);
     this.position.y = game.rnd.integerInRange(game.camera.y + 32, game.camera.height - 32);
     console.log("monster pos:" + this.position.x + ", " + this.position.y);
-
 }

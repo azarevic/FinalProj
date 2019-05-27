@@ -25,10 +25,21 @@ lock.prototype.confirmKeys = function(player) {
     return (count >= this.ids.length);
 }
 function hit (lock, player) {
+    var index = 0;
     if  (this.confirmKeys(player)) {
+        //removing items from inventory
         player.inventory = player.inventory.filter(function(value, index, arr){
             return value != lock.ids[0];
         });
+        //removing sprites from screen
+        player.inventoryDisplay.forEachAlive(function (item) {
+            if (item.id == lock.ids[0]) {
+                item.kill();
+                player.shiftInventDisplay(index);
+            }
+            index++;
+        }, this);
+        console.log("keys used: ");
         player.displayInventory();
         lock.kill();
     }
