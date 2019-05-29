@@ -6,25 +6,23 @@ MainMenue.prototype = {
 		console.log("MainMenue");
 		game.stage.backgroundColor = "#000000";
 		// add title screen text
-		var titleText = game.add.text(game.width/2, game.height/2, "[Title]\nPress [SPACE] to start\nPress [a] for tutorial\nPress [b] for credits", {font: 'Helvetica', fontSize: '48px', fill: '#fff'});
-		titleText.anchor.set(0.5);
-		//titleText.align("center");
-
-		// add lantern
-		var lanternOn = this.add.sprite(game.width/5 + 15, 0, "orange");
+		var titleText1 = game.add.text(game.world.width/2, 200, "[Title]\n", {font: 'Bookman', fontSize: '64px', fill: '#fff'});
+		var titleText2 = game.add.text(game.world.width/2, game.world.height/2, "Press [SPACE] to start\n", {font: 'Bookman', fontSize: '48px', fill: '#fff'});
+		var titleText3 = game.add.text(game.world.width/2, (game.world.height/2)+75, "Press [T] for tutorial\n", {font: 'Bookman', fontSize: '48px', fill: '#fff'});
+		var titleText4 = game.add.text(game.world.width/2, (game.world.height/2)+150, "Press [C] for credits\n", {font: 'Bookman', fontSize: '48px', fill: '#fff'});
+		titleText1.anchor.set(0.5);
+		titleText2.anchor.set(0.5);
+		titleText3.anchor.set(0.5);
+		titleText4.anchor.set(0.5);
+		//titleText.textAlign(center);
 
 	},
 	update: function() {
-		if(game.input.keyboard.justPressed(Phaser.Keyboard.A)) {
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.T)) {
 			game.state.start("Tutorial");
 		}
-		if(game.input.keyboard.justPressed(Phaser.Keyboard.B)) {
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.C)) {
 			game.state.start("Credits");
-		}
-		if(game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
-			//lanternOn.destroy();
-			var lanternOff = this.add.sprite(game.width/5 + 15, 0, "white");
-			game.state.start("Play");
 		}
 	}
 };
