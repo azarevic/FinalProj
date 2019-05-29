@@ -16,13 +16,30 @@ MainMenue.prototype = {
 		titleText4.anchor.set(0.5);
 		//titleText.textAlign(center);
 
+		//addlight
+		light = game.add.sprite(game.world.width/2, game.world.height/2, 'light', 'med');
+		light.scale.x = 0.7;
+		light.scale.y = 0.7;
+		light.anchor.set(0.5);
+		light.animations.add('flicker', ['low', 'low', 'med', 'med', 'med', 'med', 'med', 'low', 'med', 'med', 'med', 'med', 'med', 'bright', 'bright', 'bright', 'med', 'med', 'bright', 'bright'], 10, true, false);
+
+		// time animation
+		tick = game.time.now;
+
 	},
 	update: function() {
+
+		// start animations
+		light.animations.play('flicker');
+		// change states
 		if(game.input.keyboard.justPressed(Phaser.Keyboard.T)) {
 			game.state.start("Tutorial");
 		}
 		if(game.input.keyboard.justPressed(Phaser.Keyboard.C)) {
 			game.state.start("Credits");
+		}
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
+			game.state.start("Play");
 		}
 	}
 };

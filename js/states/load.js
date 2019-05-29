@@ -15,9 +15,8 @@ Load.prototype = {
 		game.load.image("p1", "p1.png");
 		game.load.image("monster", "monster.png");
 
-		// placeholder lantern
-		game.load.image("orange", "templanternORANGE.png");
-		game.load.image("white", "templantern.png");
+		// menu light
+		game.load.atlas('light', 'light.png', 'light.json');
 		
 		//placeholder map and objects
         game.load.image("blueEye", "blue jewel.png");
