@@ -13,7 +13,10 @@ Load.prototype = {
 		// load graphics assets
 		game.load.path = "assets/img/";
 		game.load.image("p1", "p1.png");
-		game.load.image("monster", "monster.png")
+		game.load.image("monster", "monster.png");
+
+		// menu light
+		game.load.atlas('light', 'light.png', 'light.json');
 		
 		//placeholder map and objects
         game.load.image("blueEye", "blue jewel.png");
