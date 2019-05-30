@@ -25,10 +25,13 @@ MainMenue.prototype = {
 
 		//music
 		this.menuMusic = game.add.audio('menue');
-		this.menuMusic.play('', 0, 0.2, true);
+		if(musicisPlaying == false){
+			this.menuMusic.play('', 0, 0.2, true);
+			musicisPlaying = true;
+		}
+		
 	},
 	update: function() {
-
 		// start animations
 		light.animations.play('flicker');
 		// change states
@@ -39,7 +42,10 @@ MainMenue.prototype = {
 			game.state.start("Credits");
 		}
 		if(game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
-			this.menuMusic.stop();
+			if(musicisPlaying == true){
+				this.menuMusic.stop();
+				musicisPlaying = false;
+			}
 			game.state.start("Play");
 		}
 	}

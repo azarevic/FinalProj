@@ -36,6 +36,7 @@ var blueJewel = false;
 var yellowJewel = false;
 var keys1 = false;
 var keys2 = false;
+var musicisPlaying = false;
 game = new Phaser.Game(1280, 720, Phaser.AUTO, "finalProto", { preload: preload });
 
 window.onload = function () {
