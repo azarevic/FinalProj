@@ -1,10 +1,12 @@
 //Player prefab
 
-function Player(game, key, monster) {
-    Phaser.Sprite.call(this, game, 96, 1448, key);
+function Player(game, key, atlas, monster) {
+    Phaser.Sprite.call(this, game, 96, 1448, 'playspr', key);
 
     //properties
     game.physics.enable(this);
+    this.scale.x = 0.035;
+    this.scale.y = 0.035;
     this.body.allowGravity = false;
     this.body.collideWorldBounds = true;
     this.anchor.setTo(0.5, 0.5);
@@ -13,6 +15,12 @@ function Player(game, key, monster) {
     this.MAX_VELOCITY = 300;
     this.input = game.input;
     this.cursors = this.input.keyboard.createCursorKeys();
+    //animations
+    this.animations.add('left', ['p3'], 10, true, false);
+    this.animations.add('right', ['p2'], 10, true, false);
+    this.animations.add('up', ['p4'], 10, true, false);
+    this.animations.add('down', ['p1'], 10, true, false);
+    this.animations.add('still', ['p1'], 10, true, false);
     //light
     this.lightSwitch = true;
     this.MAX_LIGHT_RANGE = 200;
@@ -41,11 +49,14 @@ Player.prototype.update = function () {
 }
 Player.prototype.move = function () {
     //move x axis
+    this.animations.play('still');
     if (this.cursors.right.isDown) {
         this.body.velocity.x = this.MAX_VELOCITY;
+        this.animations.play('right');
     }
     else if (this.cursors.left.isDown) {
         this.body.velocity.x = -this.MAX_VELOCITY;
+        this.animations.play('left');
     }
     else {
         this.body.velocity.x = 0;
@@ -53,9 +64,11 @@ Player.prototype.move = function () {
     //moving y axis
     if (this.cursors.up.isDown) {
         this.body.velocity.y = -this.MAX_VELOCITY;
+        this.animations.play('up');
     }
     else if (this.cursors.down.isDown) {
         this.body.velocity.y = this.MAX_VELOCITY;
+        this.animations.play('down');
     }
     else {
         this.body.velocity.y = 0;

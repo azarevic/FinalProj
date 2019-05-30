@@ -12,8 +12,9 @@ Load.prototype = {
 
 		// load graphics assets
 		game.load.path = "assets/img/";
-		game.load.image("p1", "p1.png");
 		game.load.image("monster", "monster.png");
+
+		game.load.atlas('playspr', 'playersprites.png', 'playersprites.json');
 
 		// menu light
 		game.load.atlas('light', 'light.png', 'light.json');
