@@ -38,7 +38,7 @@ MainMenue.prototype = {
 		if(game.input.keyboard.justPressed(Phaser.Keyboard.C)) {
 			game.state.start("Credits");
 		}
-		if(game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBA)) {
 			game.state.start("Play");
 		}
 	}
