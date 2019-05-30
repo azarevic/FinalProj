@@ -34,6 +34,7 @@ Load.prototype = {
 		game.load.audio("monsterR", "monsterR.mp3");
 		game.load.audio("pickUp", "pickUp.mp3");
 		game.load.audio("chase", "ISeeU.mp3");
+		game.load.audio("menue", "menue.wav");
 	},
 	create: function() {
 		game.state.start("MainMenue");

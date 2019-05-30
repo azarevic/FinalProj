@@ -23,9 +23,9 @@ MainMenue.prototype = {
 		light.anchor.set(0.5);
 		light.animations.add('flicker', ['low', 'low', 'med', 'med', 'med', 'med', 'med', 'low', 'med', 'med', 'med', 'med', 'med', 'bright', 'bright', 'bright', 'med', 'med', 'bright', 'bright'], 10, true, false);
 
-		// time animation
-		tick = game.time.now;
-
+		//music
+		this.menuMusic = game.add.audio('menue');
+		this.menuMusic.play('', 0, 0.2, true);
 	},
 	update: function() {
 
@@ -39,6 +39,7 @@ MainMenue.prototype = {
 			game.state.start("Credits");
 		}
 		if(game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
+			this.menuMusic.stop();
 			game.state.start("Play");
 		}
 	}
