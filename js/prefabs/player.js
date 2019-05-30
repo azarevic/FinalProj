@@ -19,7 +19,7 @@ function Player(game, key, atlas, monster) {
     this.animations.add('left', ['p3'], 10, true, false);
     this.animations.add('right', ['p2'], 10, true, false);
     this.animations.add('up', ['p4'], 10, true, false);
-    this.animations.add('down', ['p1'], 10, true, false);
+    this.animations.add('down', ['p1', 'p5'], 500, true, false);
     this.animations.add('still', ['p1'], 10, true, false);
     //light
     this.lightSwitch = true;
