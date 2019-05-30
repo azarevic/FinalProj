@@ -66,6 +66,8 @@ Play.prototype = {
 		game.physics.arcade.overlap(this.player, this.monster, this.colPE, null, this);
 		//map
 		game.physics.arcade.collide(this.player, this.mapLayer);
+		//This text updates with dialog and information
+		this.conversationText.text = this.words;
 
 		//map & object collision
 		game.physics.arcade.collide(this.player, this.walls);
@@ -203,7 +205,7 @@ Play.prototype = {
  		wordsArray[2] = "Stand on Help boxes to ask for help\nPress D to continue";
  		wordsArray[3] = "";
  		
- 		if (this.i < wordsArray.length && game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+ 		if (this.i < 3 && game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
 			this.i++;
 			
 		} 
