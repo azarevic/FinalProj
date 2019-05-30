@@ -13,15 +13,14 @@ Load.prototype = {
 		// load graphics assets
 		game.load.path = "assets/img/";
 		game.load.image("monster", "monster.png");
-
 		game.load.atlas('playspr', 'playersprites.png', 'playersprites.json');
 
 		// menu light
 		game.load.atlas('light', 'light.png', 'light.json');
 		
 		//placeholder map and objects
-        game.load.image("blueEye", "blue jewel.png");
-		game.load.image("yellowEye", "yellow jewel.png");
+        game.load.image("blueEye", "blueEye.png");
+		game.load.image("yellowEye", "yellowEye.png");
 		game.load.image("key", "key.png");
 		game.load.image('door', 'door.png');
 		game.load.spritesheet('statue', 'statue.png', 64, 32);

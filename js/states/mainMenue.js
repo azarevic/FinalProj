@@ -42,10 +42,8 @@ MainMenue.prototype = {
 			game.state.start("Credits");
 		}
 		if(game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
-			if(musicisPlaying == true){
-				this.menuMusic.stop();
-				musicisPlaying = false;
-			}
+			this.menuMusic.stop();
+			musicisPlaying = false;
 			game.state.start("Play");
 		}
 	}
