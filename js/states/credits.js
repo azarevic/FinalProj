@@ -7,7 +7,7 @@ Credits.prototype = {
 		game.stage.backgroundColor = "#000000";
 		// add last names
 		var titleText1 = game.add.text(game.world.width/2, (game.world.height/2)-225, "Credits:\n", {font: 'Bookman', fontSize: '48px', fill: '#fff'});
-		var titleText2 = game.add.text(game.world.width/2, (game.world.height/2)-75, "Alejandro - Programming and Mechanic Design\n", {font: 'Bookman', fontSize: '48px', fill: '#fff'});
+		var titleText2 = game.add.text(game.world.width/2, (game.world.height/2)-75, "Alejandro - Programming and Sound Design\n", {font: 'Bookman', fontSize: '48px', fill: '#fff'});
 		var titleText3 = game.add.text(game.world.width/2, (game.world.height/2), "Drea - Art and Menu UI\n", {font: 'Bookman', fontSize: '48px', fill: '#fff'});
 		var titleText4 = game.add.text(game.world.width/2, (game.world.height/2)+75, "Misael - Narrative and Level Design\n", {font: 'Bookman', fontSize: '48px', fill: '#fff'});
 		var titleText5 = game.add.text(game.world.width/2, (game.world.height/2)+225, "Press [BACKSPACE] to return to main menu", {font: 'Bookman', fontSize: '48px', fill: '#fff'});
