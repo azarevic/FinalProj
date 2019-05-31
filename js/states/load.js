@@ -21,8 +21,8 @@ Load.prototype = {
 		//placeholder map and objects
         game.load.image("blueEye", "blueEye.png");
 		game.load.image("yellowEye", "yellowEye.png");
-		game.load.image("key", "key.png");
-		game.load.image('door', 'door.png');
+		game.load.image("key", "finalKey.png");
+		game.load.image('door', 'finalDoor.png');
 		game.load.spritesheet('statue', 'statue.png', 64, 32);
 		game.load.tilemap('level', 'trialMap.json', null, Phaser.Tilemap.TILED_JSON);
 		game.load.spritesheet('tilesheet', 'trialSprites.png', 32, 32);

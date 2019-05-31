@@ -1,6 +1,6 @@
 //Player prefab
 
-function Player(game, key, atlas, monster) {
+function Player(game, key, monster) {
     Phaser.Sprite.call(this, game, 96, 1448, 'playspr', key);
 
     //properties

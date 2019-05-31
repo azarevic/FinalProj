@@ -4,6 +4,8 @@ var lock = function (game, key, xpos, ypos) {
 
     this.body.onCollide = new Phaser.Signal();
     this.body.onCollide.add(hit, this);
+    this.scale.x = 0.0375;
+    this.scale.y = 0.0355;
 }
 lock.prototype = Object.create(myObj.prototype);
 lock.prototype.constructor = lock;

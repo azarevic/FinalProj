@@ -5,6 +5,8 @@ var Play = function (game) {
 };
 Play.prototype = {
 	create: function () {
+		//stop music
+		game.sound.stopAll();
 		//map
 		this.map = game.add.tilemap('level');
 		this.map.addTilesetImage('trialSprites', 'tilesheet');
