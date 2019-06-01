@@ -6,6 +6,8 @@ var Play = function (game) {
 };
 Play.prototype = {
 	create: function () {
+		//stop music
+		this.sound.stopAll();
 		this.words = '' + this.words;//dialog/tutorial
 		//map
 		this.map = game.add.tilemap('level');
