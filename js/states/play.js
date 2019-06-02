@@ -225,4 +225,11 @@ Play.prototype = {
 			}
 		}, this);
 	},
+	addNotes: function () {
+		var obj;
+		
+		for (let i = 0; i < notes.length; i++) {
+			console.log(notes[i]);	
+		}
+	}
 };

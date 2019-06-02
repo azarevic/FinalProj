@@ -5,6 +5,11 @@ var note = function (game, key, xpos, ypos, text) {
     // this.scale.y = 0.025;
     // this.name = key;
     // this.id = id;
+    this.body.onCollide = new Phaser.Signal();
+    this.body.onCollide.add(hitNote, this);
 }
 note.prototype = Object.create(myObj.prototype);
 note.prototype.constructor = note;
+function hitNote (note, player) {
+    console.log("note hit");
+}
