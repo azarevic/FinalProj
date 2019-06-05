@@ -12,6 +12,12 @@ Load.prototype = {
 
 		// load graphics assets
 		game.load.path = "assets/img/";
+		
+		//Textboxes
+		game.load.text('dialog1', 'Dialog1.JSON');
+		game.load.text('dialog2', 'Dialog2.JSON');
+		game.load.image('dialogbox', 'dialogbox.png');
+		this.load.bitmapFont('font', 'font.png', 'font.fnt');
 		game.load.image("monster", "monster.png");
 		game.load.atlas('playspr', 'playersprites.png', 'playersprites.json');
 
