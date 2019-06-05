@@ -48,7 +48,9 @@ window.onload = function () {
 	game.state.add("MainMenue", MainMenue);
 	game.state.add("Tutorial", Tutorial);
 	game.state.add("Credits", Credits);
+	game.state.add("Intro", Intro);
 	game.state.add("Play", Play);
+	game.state.add("Outro", Outro);
 	game.state.add("GameOver", GameOver);
 	game.state.start("Boot");
 }
