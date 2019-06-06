@@ -6,8 +6,7 @@ Load.prototype = {
 		console.log("Load");
 
 		// setup loading bar
-		var loadingBar = this.add.sprite(game.width/2, game.height/2, "loading");
-		loadingBar.anchor.set(0.5);
+		var loadingBar = this.add.sprite(game.width/2 - 160, game.height/2, "loading");
 		game.load.setPreloadSprite(loadingBar);
 
 		// load graphics assets
@@ -26,6 +25,7 @@ Load.prototype = {
 		game.load.spritesheet('statue', 'statue.png', 64, 32);
 		game.load.tilemap('level', 'trialMap.json', null, Phaser.Tilemap.TILED_JSON);
 		game.load.spritesheet('tilesheet', 'trialSprites.png', 32, 32);
+		game.load.image("note", "note.png");
 		
 		// load audio assets
 		game.load.path = "assets/audio/";
