@@ -195,16 +195,16 @@ Play.prototype = {
 	showNarration: function() {
     	//this function shows the tutorial and other information text  
     	var text = '0';
-        style = { font: '40px Arial', fill: '#fff', align: 'center' };
+        style = { font: '40px Almendra', fill: '#fff', align: 'center' };
         this.conversationText = this.game.add.text(120, 510, text, style);
         this.conversationText.fixedToCamera = true;
     },
     introDialogue: function() {
 		//tutorial text, this adds the text
  		var wordsArray = new Array();
- 		wordsArray[0] = "Use arrow keys to move\nPress D to continue";
- 		wordsArray[1] = "Press F to turn on/off the lights\nPress D to continue";
- 		wordsArray[2] = "Stand on Help boxes to ask for help\nPress D to continue";
+ 		wordsArray[0] = "Use arrow keys to move\nPress [D] to continue";
+ 		wordsArray[1] = "Press [F] to turn on/off the lights\nPress [D] to continue";
+ 		wordsArray[2] = "Stand on Help boxes to ask for help\nPress [D] to continue";
  		wordsArray[3] = "";
  		
  		if (this.i < 3 && game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
