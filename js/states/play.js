@@ -10,10 +10,12 @@ Play.prototype = {
 		this.sound.stopAll();
 		this.words = '' + this.words;//dialog/tutorial
 		//map
-		this.map = game.add.tilemap('level');
-		this.map.addTilesetImage('trialSprites', 'tilesheet');
+		this.map = game.add.tilemap('level1');
+		this.map.addTilesetImage('tileset1', 'tilesheet1');
+		this.map.addTilesetImage('decorations', 'tilesheet2');
 		this.floorLayer = this.map.createLayer('ground');
 		this.wallsLayer = this.map.createLayer('walls');
+		this.decorationsLayer = this.map.createLayer('decorations');
 		this.map.setCollisionByExclusion([], true, this.wallsLayer);
 		this.wallsLayer.resizeWorld();
 
