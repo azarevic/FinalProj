@@ -21,6 +21,8 @@ function Player(game, key, monster) {
     this.animations.add('up', ['p4'], 10, true, false);
     this.animations.add('down', ['p1', 'p5'], 500, true, false);
     this.animations.add('still', ['p1'], 10, true, false);
+    //this.animations.add('leftDown', ['p7'], 10, true, false);
+    //this.animations.add('rightDown', ['p6'], 10, true, false);
     //light
     this.lightSwitch = true;
     this.MAX_LIGHT_RANGE = 200;
@@ -52,11 +54,22 @@ Player.prototype.move = function () {
     this.animations.play('still');
     if (this.cursors.right.isDown) {
         this.body.velocity.x = this.MAX_VELOCITY;
-        this.animations.play('right');
+        //if(this.cursors.down.isDown){
+        //    this.animations.play('rightDown');
+        //}
+        //else{
+            this.animations.play('right');
+        //}
     }
     else if (this.cursors.left.isDown) {
         this.body.velocity.x = -this.MAX_VELOCITY;
-        this.animations.play('left');
+        //if(this.cursors.down.isDown){
+        //    this.animations.play('leftDown');
+        //}
+        //else{
+            this.animations.play('left');
+        //}
+
     }
     else {
         this.body.velocity.x = 0;
@@ -68,7 +81,16 @@ Player.prototype.move = function () {
     }
     else if (this.cursors.down.isDown) {
         this.body.velocity.y = this.MAX_VELOCITY;
-        this.animations.play('down');
+        //if(this.cursors.left.isDown){
+        //    this.animations.play('leftDown');
+        //}
+        //else if(this.cursors.right.isDown){
+        //    this.animations.play('rightDown');
+        //}
+        //else{
+            this.animations.play('down');
+        //}
+
     }
     else {
         this.body.velocity.y = 0;
