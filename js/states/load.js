@@ -27,6 +27,20 @@ Load.prototype = {
 		game.load.spritesheet('tilesheet', 'trialSprites.png', 32, 32);
 		game.load.image("note", "note.png");
 		
+		game.load.path = "assets/maps/";
+		//placeholder map and objects
+
+		game.load.tilemap('level1', 'map1.json', null, Phaser.Tilemap.TILED_JSON);
+		game.load.tilemap('level2', 'trialMap.json', null, Phaser.Tilemap.TILED_JSON);
+		game.load.tilemap('level3', 'map3.json', null, Phaser.Tilemap.TILED_JSON);
+		game.load.tilemap('level4', 'map4.json', null, Phaser.Tilemap.TILED_JSON);
+		game.load.tilemap('level5', 'map5.json', null, Phaser.Tilemap.TILED_JSON);
+		game.load.tilemap('level6', 'map6.json', null, Phaser.Tilemap.TILED_JSON);
+		game.load.tilemap('level7', 'map7.json', null, Phaser.Tilemap.TILED_JSON);
+		game.load.tilemap('level8', 'map8.json', null, Phaser.Tilemap.TILED_JSON);
+		game.load.spritesheet('tilesheet1', 'spritesheetfinal_.png', 32, 32);
+		game.load.spritesheet('tilesheet2', 'decorations.png', 32, 32);
+		
 		// load audio assets
 		game.load.path = "assets/audio/";
 		game.load.audio("monsterL", "monsterL.mp3");
