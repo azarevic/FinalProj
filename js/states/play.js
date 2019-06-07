@@ -32,6 +32,8 @@ Play.prototype = {
 		this.keys.enableBody = true;
 		this.locks = game.add.group();
 		this.locks.enableBody = true;
+		this.notes = game.add.group();
+		this.notes.enableBody = true;
 
 		// add enemy
 		this.monster = new Enemy(game, "p1");
@@ -51,16 +53,17 @@ Play.prototype = {
 		this.bitmap.context.strokeStyle = 'rgb(255, 255, 255)';
 		var lightBitmap = game.add.image(0, 0, this.bitmap);
 
+		//adding blend mode to bitmap (requires webgl on the browser)
+		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
+
 		//adding player
 		this.player = new Player(game, "p1", this.monster);
 		game.add.existing(this.player);
+		this.addNotes();
 		//the camera follows the player object
 		game.camera.follow(this.player, 0, 0.5, 0.5);
-
-		//adding blend mode to bitmap (requires webgl on the browser)
-		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
 		
-		this.showNarration();//shows dialog/information/tutorial
+		//this.showNarration();//shows dialog/information/tutorial
 	},
 	update: function () {
 		this.player.listen(this.noiseMakers);
@@ -69,15 +72,15 @@ Play.prototype = {
 		//map
 		game.physics.arcade.collide(this.player, this.mapLayer);
 		//This text updates with dialog and information
-		this.conversationText.text = this.words;
+		//this.conversationText.text = this.words;
 
 		//map & object collision
 		game.physics.arcade.collide(this.player, this.walls);
 		game.physics.arcade.collide(this.player, this.wallsLayer);
 		game.physics.arcade.collide(this.player, this.locks);
 		game.physics.arcade.overlap(this.player, this.keys, this.collectItem, null, this);
-		
-		this.introDialogue();//this calls the method that displays the tutorial
+
+		//this.introDialogue();//this calls the method that displays the tutorial
 	},
 	colPE: function (player, enemy) {
 		player.kill();
@@ -192,25 +195,25 @@ Play.prototype = {
 			}
 		}
 	},
-	showNarration: function() {
-    	//this function shows the tutorial and other information text  
-    	var text = '0';
-        style = { font: '40px Almendra', fill: '#fff', align: 'center' };
-        this.conversationText = this.game.add.text(120, 510, text, style);
-        this.conversationText.fixedToCamera = true;
-    },
-    introDialogue: function() {
+	showNarration: function () {
+		//this function shows the tutorial and other information text  
+		var text = '0';
+		style = { font: '40px Almendra', fill: '#fff', align: 'center' };
+		this.conversationText = this.game.add.text(120, 510, text, style);
+		this.conversationText.fixedToCamera = true;
+	},
+	introDialogue: function () {
 		//tutorial text, this adds the text
- 		var wordsArray = new Array();
- 		wordsArray[0] = "Use arrow keys to move\nPress [D] to continue";
- 		wordsArray[1] = "Press [F] to turn on/off the lights\nPress [D] to continue";
- 		wordsArray[2] = "Stand on Help boxes to ask for help\nPress [D] to continue";
- 		wordsArray[3] = "";
- 		
- 		if (this.i < 3 && game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+		var wordsArray = new Array();
+		wordsArray[0] = "Use arrow keys to move\nPress [D] to continue";
+		wordsArray[1] = "Press [F] to turn on/off the lights\nPress [D] to continue";
+		wordsArray[2] = "Stand on Help boxes to ask for help\nPress [D] to continue";
+		wordsArray[3] = "";
+
+		if (this.i < 3 && game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
 			this.i++;
-			
-		} 
+
+		}
 		this.words = wordsArray[this.i];
 	},
 	collectItem: function (player, item) {
@@ -225,4 +228,14 @@ Play.prototype = {
 			}
 		}, this);
 	},
+	addNotes: function () {
+		var obj;
+
+		for (let i = 0; i < notes.length; i += 2) {
+			console.log(notes[i]);
+			obj = new note(game, "note", notes[i].x, notes[i].y, notes[i + 1], this.player);
+			game.add.existing(obj);
+			this.notes.add(obj);
+		}
+	}
 };

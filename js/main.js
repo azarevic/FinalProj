@@ -79,3 +79,6 @@ var objs = [
 	0, "door", new Phaser.Point(832, 121),
 	3, "key", new Phaser.Point(1312, 448)									//placeHolder for a droped key
 ];
+var notes = [
+	new Phaser.Point(128, 1500), "hell o"
+];
