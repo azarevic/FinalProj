@@ -116,7 +116,7 @@ Level6.prototype = {
 		//map
 		game.physics.arcade.collide(this.player, this.mapLayer);
 		//This text updates with dialog and information
-		this.conversationText.text = this.words;
+		//this.conversationText.text = this.words;
 
 		//map & object collision
 		game.physics.arcade.collide(this.player, this.walls);
