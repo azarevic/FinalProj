@@ -43,7 +43,11 @@ Level2.prototype = {
 		//adding some walls to test ray tracing
 		this.walls = game.add.group();
 		this.walls.enableBody = true;
-
+		this.painting = game.add.sprite(736, 1536, 'painting');//painting for puzzle
+		this.painting.enableBody = true;
+		game.physics.enable(this.painting);
+    		this.painting.body.immovable = true;
+    		this.painting.body.allowGravity = false;
 		this.addObjects();
 		//Create a bitmap texture for drawing light cones
 		//this should go at the bottom to cover all srpites 
@@ -78,7 +82,14 @@ Level2.prototype = {
 		game.physics.arcade.collide(this.player, this.wallsLayer);
 		game.physics.arcade.collide(this.player, this.locks);
 		game.physics.arcade.overlap(this.player, this.keys, this.collectItem, null, this);
-		
+		//console.log(lightening);
+		this.game.physics.arcade.collide(this.player, this.painting);
+		this.introDialogue();//this calls the method that displays the tutorial
+		if(lightening === false){
+			this.painting.body.immovable = false;
+		}else {
+			this.painting.body.immovable = true;
+		}
 		this.introDialogue();//this calls the method that displays the tutorial
 	},
 	colPE: function (player, enemy) {
