@@ -80,11 +80,13 @@ Player.prototype.checkLight = function () {
         if (this.lightSwitch) {
             this.lightRange = 200;
             this.tint = 0xffffff;
+            lightening = true;//for the painting puzzle
             console.log("switched to 200");
         }
         else {
             this.lightRange = 0;
             this.tint = 0x000000;
+            lightening = false;////for the painting puzzle
             console.log("switched to 0");
         }
     }
