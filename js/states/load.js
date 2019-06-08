@@ -27,6 +27,16 @@ Load.prototype = {
 		game.load.spritesheet('tilesheet', 'trialSprites.png', 32, 32);
 		game.load.image("note", "note.png");
 		game.load.image("painting", "painting.jpg");
+		
+				//resized coffins
+		game.load.image("coffinI", "coffinI.png");
+		game.load.image("coffinII", "coffinII.png");
+		game.load.image("coffinIII", "coffinIII.png");
+		game.load.image("coffinV", "coffinV.png");
+		game.load.image("coffinL", "coffinL.png");
+		game.load.image("coffinC", "coffinC.png");
+		game.load.image("coffinX", "coffinX.png");
+
 		game.load.path = "assets/maps/";
 		//placeholder map and objects
 
