@@ -8,7 +8,7 @@ Level6.prototype = {
 	create: function () {
 		//stop music
 		this.sound.stopAll();
-		this.words = '' + this.words;//dialog/tutorial
+		//this.words = '' + this.words;//dialog/tutorial
 		//map
 		this.map = game.add.tilemap('level6');
 		this.map.addTilesetImage('tileset', 'tilesheet1');
@@ -43,6 +43,51 @@ Level6.prototype = {
 		//adding some walls to test ray tracing
 		this.walls = game.add.group();
 		this.walls.enableBody = true;
+		
+		this.coffinI = game.add.sprite(128, 1344, 'coffinI');
+		game.physics.enable(this.coffinI);
+    		this.coffinI.body.immovable = true;
+    		this.coffinI.body.allowGravity = false;
+
+		this.coffinII = game.add.sprite(128, 1504, 'coffinII');
+		game.physics.enable(this.coffinII);
+    		this.coffinII.body.immovable = true;
+    		this.coffinII.body.allowGravity = false;
+
+		this.coffinIII = game.add.sprite(448, 1600, 'coffinIII');
+		game.physics.enable(this.coffinIII);
+    		this.coffinIII.body.immovable = true;
+    		this.coffinIII.body.allowGravity = false;
+
+		this.coffinV = game.add.sprite(736, 1600, 'coffinV');
+		game.physics.enable(this.coffinV);
+    		this.coffinV.body.immovable = true;
+    		this.coffinV.body.allowGravity = false;
+
+		this.coffinX = game.add.sprite(1024, 1600, 'coffinX');
+		game.physics.enable(this.coffinX);
+    		this.coffinX.body.immovable = true;
+    		this.coffinX.body.allowGravity = false;
+
+		this.coffinL = game.add.sprite(1344, 1504, 'coffinL');
+		game.physics.enable(this.coffinL);
+    		this.coffinL.body.immovable = true;
+    		this.coffinL.body.allowGravity = false;
+
+		this.coffinC = game.add.sprite(1344, 1376, 'coffinC');
+		game.physics.enable(this.coffinC);
+    		this.coffinC.body.immovable = true;
+    		this.coffinC.body.allowGravity = false;
+
+    		this.coffinD = game.add.sprite(1024, 1344, 'coffinD');
+		game.physics.enable(this.coffinD);
+    		this.coffinD.body.immovable = true;
+    		this.coffinD.body.allowGravity = false;
+
+    		this.coffinLast = game.add.sprite(736, 1440, 'coffin?');
+    		game.physics.enable(this.coffinLast);
+    		this.coffinLast.body.immovable = true;
+    		this.coffinLast.body.allowGravity = false;
 
 		this.addObjects();
 		//Create a bitmap texture for drawing light cones
@@ -62,7 +107,7 @@ Level6.prototype = {
 		//adding blend mode to bitmap (requires webgl on the browser)
 		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
 		
-		this.showNarration();//shows dialog/information/tutorial
+		//this.showNarration();//shows dialog/information/tutorial
 	},
 	update: function () {
 		this.player.listen(this.noiseMakers);
@@ -79,7 +124,93 @@ Level6.prototype = {
 		game.physics.arcade.collide(this.player, this.locks);
 		game.physics.arcade.overlap(this.player, this.keys, this.collectItem, null, this);
 		
-		this.introDialogue();//this calls the method that displays the tutorial
+		game.physics.arcade.overlap(this.player, this.coffinI, this.touchedCoffinI, null, this);
+		game.physics.arcade.overlap(this.player, this.coffinII, this.touchedCoffinII, null, this);
+		game.physics.arcade.overlap(this.player, this.coffinIII, this.touchedCoffinIII, null, this);
+		game.physics.arcade.overlap(this.player, this.coffinV, this.touchedCoffinV, null, this);
+		game.physics.arcade.overlap(this.player, this.coffinX, this.touchedCoffinX, null, this);
+		game.physics.arcade.overlap(this.player, this.coffinL, this.touchedCoffinL, null, this);
+		game.physics.arcade.overlap(this.player, this.coffinC, this.touchedCoffinC, null, this);
+		game.physics.arcade.overlap(this.player, this.coffinD, this.touchedCoffinD, null, this);
+		game.physics.arcade.collide(this.player, this.coffinLast);
+		
+		if(coff > 666){
+			//console.log("u exceeded");
+			coff = 0;
+		}
+		if(coff === 666){
+			console.log("u got it right");
+			this.coffinLast.destroy();
+			coff = 0;
+		}
+		
+		//this.introDialogue();//this calls the method that displays the tutorial
+	},
+		touchedCoffinI: function (player, coffin) {
+		
+		//console.log('touchedCoffin');
+			if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+				 this.pickUpSound.play('', 0, 0.8, false, false);
+				 
+			coff = coff + 1;
+		}
+		//console.log(coff);
+	},
+	touchedCoffinII: function (player, coffin) {//this one should never be used
+		//console.log('touchedCoffin');
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+			 this.pickUpSound.play('', 0, 0.8, false, false);
+			coff = coff + 2;
+		}
+		//console.log(coff);
+	},
+	touchedCoffinIII: function (player, coffin) {//this one sould never be used
+		//console.log('touchedCoffin');
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+			 this.pickUpSound.play('', 0, 0.8, false, false);
+			coff = coff + 3;
+		}
+		//console.log(coff);
+	},
+	touchedCoffinV: function (player, coffin) {
+		//console.log('touchedCoffin');
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+			 this.pickUpSound.play('', 0, 0.8, false, false);
+			coff = coff + 5;
+		}
+		//console.log(coff);
+	},
+	touchedCoffinX: function (player, coffin) {
+		//console.log('touchedCoffin');
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+			 this.pickUpSound.play('', 0, 0.8, false, false);
+			coff = coff + 10;
+		}
+		//console.log(coff);
+	},
+	touchedCoffinC: function (player, coffin) {
+		//console.log('touchedCoffin');
+			if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+				 this.pickUpSound.play('', 0, 0.8, false, false);
+			coff = coff + 100;
+		}
+
+	},
+	touchedCoffinL: function (player, coffin) {
+			if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+				 this.pickUpSound.play('', 0, 0.8, false, false);
+			coff = coff + 50;
+		}
+
+		//console.log('touchedCoffin');
+	},
+	touchedCoffinD: function (player, coffin) {
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+			this.pickUpSound.play('', 0, 0.8, false, false);
+			coff = coff + 500;
+		}
+
+		//console.log('touchedCoffin');
 	},
 	colPE: function (player, enemy) {
 		player.kill();
@@ -194,7 +325,7 @@ Level6.prototype = {
 			}
 		}
 	},
-	showNarration: function() {
+	/*showNarration: function() {
     	//this function shows the tutorial and other information text  
     	var text = '0';
         style = { font: '40px Arial', fill: '#fff', align: 'center' };
@@ -214,7 +345,7 @@ Level6.prototype = {
 			
 		} 
 		this.words = wordsArray[this.i];
-	},
+	},*/
 	collectItem: function (player, item) {
 		player.pickUpItem(item);
 		this.player.displayInventory();
