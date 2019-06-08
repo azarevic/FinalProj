@@ -18,7 +18,7 @@ Level6.prototype = {
 		this.decorationsLayer = this.map.createLayer('decorations');
 		this.map.setCollisionByExclusion([], true, this.wallsLayer);
 		this.wallsLayer.resizeWorld();
-
+		this.pickUpSound = game.add.audio("pickUp");
 		console.log("Play");
 		//adding physics
 		game.physics.startSystem(Phaser.Physics.ARCADE);
