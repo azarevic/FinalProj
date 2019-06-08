@@ -26,9 +26,10 @@ Load.prototype = {
 		game.load.tilemap('level', 'trialMap.json', null, Phaser.Tilemap.TILED_JSON);
 		game.load.spritesheet('tilesheet', 'trialSprites.png', 32, 32);
 		game.load.image("note", "note.png");
+		//resized coffins
 		game.load.image("painting", "painting.jpg");
-		
-				//resized coffins
+		game.load.image("coffinD", "coffinD.png");
+		game.load.image("coffin?", "coffin3.png");
 		game.load.image("coffinI", "coffinI.png");
 		game.load.image("coffinII", "coffinII.png");
 		game.load.image("coffinIII", "coffinIII.png");
