@@ -80,12 +80,12 @@ var objs = [
 	3, "key", new Phaser.Point(1312, 448)									//placeHolder for a droped key
 ];
 var notes = [
-	new Phaser.Point(128, 1500), "hell o" // tester
-	new Phaser.Point(992,448), "The eyes are missing." // level 2
-	new Phaser.Point(192, 1856), "I decree to exuent this eternal darkness, thou might not but break the seal that protects their forces using the true cross and forbear the arrival of their god. Find the pieces of the titulus crucis and forge 'em together." // level 3
-	new Phaser.Point(224, 256), "The strength of the eternal darkness shall beray the path to the crypt. Return to the room where there was an eyeless statue, and the darkness will let you go through the painting where our lord’s head is pointing at." // level 1
-	new Phaser.Point(768, 320), "In the depths of this land, utilize the coffins to dial the beast." // level 6
-	new Phaser.Point(384, 736), "666 is the number of the beast, just so you know." // level 6
-	new Phaser.Point(364, 1024), "D = 500, C = 100, L = 50, X = 10, V = 5, I = 1." // level 6
-	new Phaser.Point(896, 1344), "Step on the coffins in the right order. If you mess up, exit this room and come back." // level 6
+	new Phaser.Point(128, 1500), "hell o", // tester
+	new Phaser.Point(992,448), "The eyes are missing.", // level 2
+	new Phaser.Point(192, 1856), "I decree to exuent this eternal darkness, thou might not but break the seal that protects their forces using the true cross and forbear the arrival of their god. Find the pieces of the titulus crucis and forge 'em together.", // level 3
+	new Phaser.Point(224, 256), "The strength of the eternal darkness shall beray the path to the crypt. Return to the room where there was an eyeless statue, and the darkness will let you go through the painting where our lord’s head is pointing at.", // level 1
+	new Phaser.Point(768, 320), "In the depths of this land, utilize the coffins to dial the beast.", // level 6
+	new Phaser.Point(384, 736), "666 is the number of the beast, just so you know.", // level 6
+	new Phaser.Point(364, 1024), "D = 500, C = 100, L = 50, X = 10, V = 5, I = 1.", // level 6
+	new Phaser.Point(896, 1344), "Step on the coffins in the right order. If you mess up, exit this room and come back.", // level 6
 ];
