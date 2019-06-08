@@ -26,7 +26,7 @@ Load.prototype = {
 		game.load.tilemap('level', 'trialMap.json', null, Phaser.Tilemap.TILED_JSON);
 		game.load.spritesheet('tilesheet', 'trialSprites.png', 32, 32);
 		game.load.image("note", "note.png");
-		
+		game.load.image("painting", "painting.jpg");
 		game.load.path = "assets/maps/";
 		//placeholder map and objects
 
