@@ -31,7 +31,8 @@
 
 //define globals
 var game;
-
+var lightening = true;//this is for the painting puzzle
+var coff = 0;//this is for the coffin puzzle
 var blueJewel = false;
 var yellowJewel = false;
 var keys1 = false;
