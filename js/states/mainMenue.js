@@ -31,7 +31,9 @@ MainMenue.prototype = {
 			this.menuMusic.play('', 0, 0.2, true);
 			musicisPlaying = true;
 		}
-		
+		game.player = new Player(game, "p1");
+		//game.add.existing(game.player);
+		console.log(game.player);
 	},
 	update: function() {
 		// start animations
@@ -46,7 +48,8 @@ MainMenue.prototype = {
 		if(game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
 			this.menuMusic.stop();
 			musicisPlaying = false;
-			game.state.start("Play");
+			game.state.start("Intro");
+			//game.state.start("Play", true, false, customParam1, customParam2);﻿
 		}
 	}
 };

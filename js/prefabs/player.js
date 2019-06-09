@@ -1,7 +1,7 @@
 //Player prefab
 
-function Player(game, key, monster) {
-    Phaser.Sprite.call(this, game, 96, 1448, 'playspr', key);
+function Player(game, key) {
+    Phaser.Sprite.call(this, game, 160, 1120, 'playspr', key);
 
     //properties
     game.physics.enable(this);
@@ -21,8 +21,6 @@ function Player(game, key, monster) {
     this.animations.add('up', ['p4'], 10, true, false);
     this.animations.add('down', ['p1', 'p5'], 500, true, false);
     this.animations.add('still', ['p1'], 10, true, false);
-    //this.animations.add('leftDown', ['p7'], 10, true, false);
-    //this.animations.add('rightDown', ['p6'], 10, true, false);
     //light
     this.lightSwitch = true;
     this.MAX_LIGHT_RANGE = 200;
@@ -37,11 +35,15 @@ function Player(game, key, monster) {
     this.pickUpSound = game.add.audio("pickUp");
     this.fading = true;
     //monster activation
-    this.monster = monster;
+    this.monster;
     //inventory
     this.inventory = [];
     this.inventoryDisplay = game.add.group();
     this.camOffSet = 32;
+
+    //this.spawnPoint;
+
+    //console.log(this);
 }
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor = Player;
@@ -54,22 +56,11 @@ Player.prototype.move = function () {
     this.animations.play('still');
     if (this.cursors.right.isDown) {
         this.body.velocity.x = this.MAX_VELOCITY;
-        //if(this.cursors.down.isDown){
-        //    this.animations.play('rightDown');
-        //}
-        //else{
-            this.animations.play('right');
-        //}
+        this.animations.play('right');
     }
     else if (this.cursors.left.isDown) {
         this.body.velocity.x = -this.MAX_VELOCITY;
-        //if(this.cursors.down.isDown){
-        //    this.animations.play('leftDown');
-        //}
-        //else{
-            this.animations.play('left');
-        //}
-
+        this.animations.play('left');
     }
     else {
         this.body.velocity.x = 0;
@@ -81,16 +72,7 @@ Player.prototype.move = function () {
     }
     else if (this.cursors.down.isDown) {
         this.body.velocity.y = this.MAX_VELOCITY;
-        //if(this.cursors.left.isDown){
-        //    this.animations.play('leftDown');
-        //}
-        //else if(this.cursors.right.isDown){
-        //    this.animations.play('rightDown');
-        //}
-        //else{
-            this.animations.play('down');
-        //}
-
+        this.animations.play('down');
     }
     else {
         this.body.velocity.y = 0;
@@ -101,11 +83,13 @@ Player.prototype.checkLight = function () {
         this.lightSwitch = (this.lightSwitch == true) ? false : true;
         if (this.lightSwitch) {
             this.lightRange = 200;
+            lightening = true;
             this.tint = 0xffffff;
             console.log("switched to 200");
         }
         else {
             this.lightRange = 0;
+            lightening = false;
             this.tint = 0x000000;
             console.log("switched to 0");
         }
@@ -195,4 +179,7 @@ Player.prototype.displayInventory = function () {
     for (let i = 0; i < this.inventory.length; i++) {
         console.log("	" + this.inventory[i]);
     }
+}
+Player.prototype.setMonster = function(monster) {
+    this.monster = monster;
 }

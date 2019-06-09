@@ -1,28 +1,24 @@
-//Play state
-
-var Play = function (game) {
+var Level6 = function (game) {
 	this.i = 0; //variable for tutorial text loop
 	this.bitmapBleed = 64; //how much bigger the bitmap is than the camera
-	this.levelNumber = 1;
+	this.levelNumber = 6;
 };
-Play.prototype = {
+Level6.prototype = {
 	create: function () {
-		console.log("level: " + this.levelNumber);
 		//stop music
 		this.sound.stopAll();
-		this.words = '' + this.words;//dialog/tutorial
+		//this.words = '' + this.words;//dialog/tutorial
 		//map
-		this.map = game.add.tilemap('level1');
-		this.map.addTilesetImage('tileset1', 'tilesheet1');
+		this.map = game.add.tilemap('level6');
+		this.map.addTilesetImage('tileset', 'tilesheet1');
 		this.map.addTilesetImage('decorations', 'tilesheet2');
 		this.floorLayer = this.map.createLayer('ground');
 		this.wallsLayer = this.map.createLayer('walls');
 		this.decorationsLayer = this.map.createLayer('decorations');
 		this.map.setCollisionByExclusion([], true, this.wallsLayer);
 		this.wallsLayer.resizeWorld();
-
 		this.myStage = game.add.group();
-
+		this.pickUpSound = game.add.audio("pickUp");
 		console.log("Play");
 		//adding physics
 		game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -30,7 +26,7 @@ Play.prototype = {
 		//changin background color
 		game.stage.backgroundColor = "#000000";
 
-		//adding a group for the objs the game.player can hear
+		//adding a group for the objs the player can hear
 		this.noiseMakers = game.add.group();
 		this.noiseMakers.enableBody = true;
 		//group for solid objects
@@ -38,18 +34,6 @@ Play.prototype = {
 		this.keys.enableBody = true;
 		this.locks = game.add.group();
 		this.locks.enableBody = true;
-
-		this.door4 = game.add.sprite(288, 512, 'door');
-		game.physics.enable(this.door4);
-		this.door4.body.immovable = true;
-		this.door4.body.allowGravity = false;
-		this.addObjects();
-		//add Notes
-		this.notes = game.add.group();
-		this.notes.enableBody = true;
-		//add warpZones
-		this.warps = game.add.group();
-		this.warps.enableBody = true;
 
 		// add enemy
 		this.monster = new Enemy(game, "p1");
@@ -60,6 +44,64 @@ Play.prototype = {
 		this.walls = game.add.group();
 		this.walls.enableBody = true;
 
+		this.warps = game.add.group();
+		this.warps.enableBody = true;
+
+		this.key5 = game.add.sprite(1056, 1024, 'key');
+		this.fd2 = game.add.sprite(766, 1472, 'cross');
+		game.physics.enable([this.key5, this.fd2]);
+    		this.key5.body.immovable = true;
+    		this.key5.body.allowGravity = false;
+    		this.fd2.body.immovable = true;
+    		this.fd2.body.allowGravity = false;
+
+
+		this.coffinI = game.add.sprite(128, 1344, 'coffinI');
+		game.physics.enable(this.coffinI);
+    		this.coffinI.body.immovable = true;
+    		this.coffinI.body.allowGravity = false;
+
+		this.coffinII = game.add.sprite(128, 1504, 'coffinII');
+		game.physics.enable(this.coffinII);
+    		this.coffinII.body.immovable = true;
+    		this.coffinII.body.allowGravity = false;
+
+		this.coffinIII = game.add.sprite(448, 1600, 'coffinIII');
+		game.physics.enable(this.coffinIII);
+    		this.coffinIII.body.immovable = true;
+    		this.coffinIII.body.allowGravity = false;
+
+		this.coffinV = game.add.sprite(736, 1600, 'coffinV');
+		game.physics.enable(this.coffinV);
+    		this.coffinV.body.immovable = true;
+    		this.coffinV.body.allowGravity = false;
+
+		this.coffinX = game.add.sprite(1024, 1600, 'coffinX');
+		game.physics.enable(this.coffinX);
+    		this.coffinX.body.immovable = true;
+    		this.coffinX.body.allowGravity = false;
+
+		this.coffinL = game.add.sprite(1344, 1504, 'coffinL');
+		game.physics.enable(this.coffinL);
+    		this.coffinL.body.immovable = true;
+    		this.coffinL.body.allowGravity = false;
+
+		this.coffinC = game.add.sprite(1344, 1376, 'coffinC');
+		game.physics.enable(this.coffinC);
+    		this.coffinC.body.immovable = true;
+    		this.coffinC.body.allowGravity = false;
+
+    		this.coffinD = game.add.sprite(1024, 1344, 'coffinD');
+		game.physics.enable(this.coffinD);
+    		this.coffinD.body.immovable = true;
+    		this.coffinD.body.allowGravity = false;
+
+    		this.coffinLast = game.add.sprite(736, 1440, 'coffin?');
+    		game.physics.enable(this.coffinLast);
+    		this.coffinLast.body.immovable = true;
+    		this.coffinLast.body.allowGravity = false;
+
+		this.addObjects();
 		//Create a bitmap texture for drawing light cones
 		//this should go at the bottom to cover all srpites 
 		//that will be in darkness
@@ -68,10 +110,7 @@ Play.prototype = {
 		this.bitmap.context.strokeStyle = 'rgb(255, 255, 255)';
 		var lightBitmap = game.add.image(0, 0, this.bitmap);
 
-		//adding blend mode to bitmap (requires webgl on the browser)
-		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
-
-		//adding player
+		// //adding player
 		if (!game.player.parent)
         {
 			this.add.existing(game.player);
@@ -80,24 +119,19 @@ Play.prototype = {
 		game.player.setMonster(this.monster);
 		this.players = game.add.group();
 		this.players.add(game.player);
-		//game.player = new Player(game, "p1");
-		// game.player = player;
-		// console.log(this.p)
-		// game.player.setMonster(this.monster);
+		// game.player = new Player(game, "p1", this.monster);
 		// game.add.existing(game.player);
-		// this.game.playerGroup = game.add.group();
-		// this.game.playerGroup.add(game.player);
-
-		this.addNotes();
-		this.addWarpZones();
-		//the camera follows the game.player object
+		//the camera follows the player object
 		game.camera.follow(game.player, 0, 0.5, 0.5);
+				//this.addNotes();
+		this.addWarpZones();
 
+		//adding blend mode to bitmap (requires webgl on the browser)
+		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
+		
 		//this.showNarration();//shows dialog/information/tutorial
 	},
 	update: function () {
-		// game.player.move();
-		// game.player.checkLight();
 		game.player.listen(this.noiseMakers);
 		this.rayCast();
 		game.physics.arcade.overlap(game.player, this.monster, this.colPE, null, this);
@@ -112,16 +146,108 @@ Play.prototype = {
 		game.physics.arcade.collide(game.player, this.locks);
 		game.physics.arcade.collide(game.player, this.warps);
 		game.physics.arcade.overlap(game.player, this.keys, this.collectItem, null, this);
-		game.physics.arcade.collide(game.player, this.door4);
-
-		if(key4 === true){
-			this.door4.body.immovable = false;
-		} else{
-			this.door4.body.immovable = true;
+		game.physics.arcade.overlap(game.player, this.key5, this.keepKey, null, this);
+		game.physics.arcade.overlap(game.player, this.key5, this.collectItem, null, this);
+		game.physics.arcade.overlap(game.player, this.fd2, this.keepCross, null, this);
+		game.physics.arcade.overlap(game.player, this.fd2, this.collectItem, null, this);
+		
+		game.physics.arcade.overlap(game.player, this.coffinI, this.touchedCoffinI, null, this);
+		game.physics.arcade.overlap(game.player, this.coffinII, this.touchedCoffinII, null, this);
+		game.physics.arcade.overlap(game.player, this.coffinIII, this.touchedCoffinIII, null, this);
+		game.physics.arcade.overlap(game.player, this.coffinV, this.touchedCoffinV, null, this);
+		game.physics.arcade.overlap(game.player, this.coffinX, this.touchedCoffinX, null, this);
+		game.physics.arcade.overlap(game.player, this.coffinL, this.touchedCoffinL, null, this);
+		game.physics.arcade.overlap(game.player, this.coffinC, this.touchedCoffinC, null, this);
+		game.physics.arcade.overlap(game.player, this.coffinD, this.touchedCoffinD, null, this);
+		game.physics.arcade.collide(game.player, this.coffinLast);
+		
+		if(coff > 666){
+			//console.log("u exceeded");
+			coff = 0;
 		}
-		//game.physics.arcade.overlap(game.player, this.warps, this.warp, null, this);
-
+		if(coff === 666){
+			console.log("u got it right");
+			this.coffinLast.destroy();
+			coff = 0;
+		}
+		
 		//this.introDialogue();//this calls the method that displays the tutorial
+	},
+
+		keepCross: function () {
+		fd2 = true;
+		console.log('player got key1');
+	},
+
+		keepKey: function () {
+		key5 = true;
+		console.log('player got key1');
+	},
+		touchedCoffinI: function (player, coffin) {
+		
+		//console.log('touchedCoffin');
+			if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+				 this.pickUpSound.play('', 0, 0.8, false, false);
+				 
+			coff = coff + 1;
+		}
+		//console.log(coff);
+	},
+	touchedCoffinII: function (player, coffin) {//this one should never be used
+		//console.log('touchedCoffin');
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+			 this.pickUpSound.play('', 0, 0.8, false, false);
+			coff = coff + 2;
+		}
+		//console.log(coff);
+	},
+	touchedCoffinIII: function (player, coffin) {//this one sould never be used
+		//console.log('touchedCoffin');
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+			 this.pickUpSound.play('', 0, 0.8, false, false);
+			coff = coff + 3;
+		}
+		//console.log(coff);
+	},
+	touchedCoffinV: function (player, coffin) {
+		//console.log('touchedCoffin');
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+			 this.pickUpSound.play('', 0, 0.8, false, false);
+			coff = coff + 5;
+		}
+		//console.log(coff);
+	},
+	touchedCoffinX: function (player, coffin) {
+		//console.log('touchedCoffin');
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+			 this.pickUpSound.play('', 0, 0.8, false, false);
+			coff = coff + 10;
+		}
+		//console.log(coff);
+	},
+	touchedCoffinC: function (player, coffin) {
+		//console.log('touchedCoffin');
+			if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+				 this.pickUpSound.play('', 0, 0.8, false, false);
+			coff = coff + 100;
+		}
+
+	},
+	touchedCoffinL: function (player, coffin) {
+			if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+				 this.pickUpSound.play('', 0, 0.8, false, false);
+			coff = coff + 50;
+		}
+
+		//console.log('touchedCoffin');
+	},
+	touchedCoffinD: function (player, coffin) {
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+			this.pickUpSound.play('', 0, 0.8, false, false);
+			coff = coff + 500;
+		}
+
+		//console.log('touchedCoffin');
 	},
 	colPE: function (player, enemy) {
 		player.kill();
@@ -236,56 +362,31 @@ Play.prototype = {
 			}
 		}
 	},
-	showNarration: function () {
-		//this function shows the tutorial and other information text  
-		var text = '0';
-		style = { font: '40px Almendra', fill: '#fff', align: 'center' };
-		this.conversationText = this.game.add.text(120, 510, text, style);
-		this.conversationText.fixedToCamera = true;
-	},
-	introDialogue: function () {
+	/*showNarration: function() {
+    	//this function shows the tutorial and other information text  
+    	var text = '0';
+        style = { font: '40px Arial', fill: '#fff', align: 'center' };
+        this.conversationText = this.game.add.text(120, 510, text, style);
+        this.conversationText.fixedToCamera = true;
+    },
+    introDialogue: function() {
 		//tutorial text, this adds the text
-		var wordsArray = new Array();
-		wordsArray[0] = "Use arrow keys to move\nPress [D] to continue";
-		wordsArray[1] = "Press [F] to turn on/off the lights\nPress [D] to continue";
-		wordsArray[2] = "";
-		wordsArray[3] = "";
-
-		if (this.i < 3 && game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+ 		var wordsArray = new Array();
+ 		wordsArray[0] = "Use arrow keys to move\nPress D to continue";
+ 		wordsArray[1] = "Press F to turn on/off the lights\nPress D to continue";
+ 		wordsArray[2] = "Stand on Help boxes to ask for help\nPress D to continue";
+ 		wordsArray[3] = "";
+ 		
+ 		if (this.i < 3 && game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
 			this.i++;
-
-		}
+			
+		} 
 		this.words = wordsArray[this.i];
-	},
+	},*/
 	collectItem: function (player, item) {
 		player.pickUpItem(item);
-		player.displayInventory();
+		game.player.displayInventory();
 	},
-	// warp: function (game.player, warpZone) {
-	// 	console.log("repos!!!!");
-	// 	warpZone.reposgame.player();
-
-	// 	// this.myStage.forEachAlive(function (item) {
-	// 	// 	//console.log(item);
-	// 	// 	for (let i = 0; i < item.ids.length; i++) {
-	// 	// 		item.destroy();	
-	// 	// 	}
-	// 	// }, this);
-	// 	//map
-	// 	this.map = game.add.tilemap('level1');
-	// 	this.map.addTilesetImage('tileset1', 'tilesheet1');
-	// 	this.map.addTilesetImage('decorations', 'tilesheet2');
-	// 	this.floorLayer = this.map.createLayer('ground');
-	// 	this.wallsLayer = this.map.createLayer('walls');
-	// 	this.decorationsLayer = this.map.createLayer('decorations');
-	// 	this.map.setCollisionByExclusion([], true, this.wallsLayer);
-	// 	this.wallsLayer.resizeWorld();
-
-	// 	// this.myStage.add(this.map);
-	// 	// this.myStage.add(this.floorLayer);
-	// 	// this.myStage.add(this.wallsLayer);
-	// 	// this.myStage.add(this.decorationsLayer);
-	// },
 	displayKeysNeeded: function (group) {
 		group.forEachAlive(function (item) {
 			console.log(item);
@@ -294,17 +395,7 @@ Play.prototype = {
 			}
 		}, this);
 	},
-	addNotes: function () {
-		var obj;
-
-		for (let i = 0; i < notes.length; i += 2) {
-			console.log(notes[i]);
-			obj = new note(game, "note", notes[i].x, notes[i].y, notes[i + 1], game.player);
-			game.add.existing(obj);
-			this.notes.add(obj);
-		}
-	},
-	addWarpZones: function () {
+		addWarpZones: function () {
 		var obj;
 		console.log("Adding warps: ");
 

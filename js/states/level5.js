@@ -1,19 +1,19 @@
 //Play state
 
-var Play = function (game) {
+var Level5 = function (game) {
 	this.i = 0; //variable for tutorial text loop
 	this.bitmapBleed = 64; //how much bigger the bitmap is than the camera
-	this.levelNumber = 1;
+	this.levelNumber = 5;
 };
-Play.prototype = {
+Level5.prototype = {
 	create: function () {
-		console.log("level: " + this.levelNumber);
+		console.log("level: " + this.levelNumber);		
 		//stop music
 		this.sound.stopAll();
 		this.words = '' + this.words;//dialog/tutorial
 		//map
-		this.map = game.add.tilemap('level1');
-		this.map.addTilesetImage('tileset1', 'tilesheet1');
+		this.map = game.add.tilemap('level5');
+		this.map.addTilesetImage('tileset', 'tilesheet1');
 		this.map.addTilesetImage('decorations', 'tilesheet2');
 		this.floorLayer = this.map.createLayer('ground');
 		this.wallsLayer = this.map.createLayer('walls');
@@ -39,10 +39,11 @@ Play.prototype = {
 		this.locks = game.add.group();
 		this.locks.enableBody = true;
 
-		this.door4 = game.add.sprite(288, 512, 'door');
-		game.physics.enable(this.door4);
-		this.door4.body.immovable = true;
-		this.door4.body.allowGravity = false;
+		this.key2 = game.add.sprite(1024, 1408, 'key');
+		game.physics.enable(this.key2);
+		this.key2.body.immovable = true;
+		this.key2.body.allowGravity = false;
+		
 		this.addObjects();
 		//add Notes
 		this.notes = game.add.group();
@@ -112,16 +113,16 @@ Play.prototype = {
 		game.physics.arcade.collide(game.player, this.locks);
 		game.physics.arcade.collide(game.player, this.warps);
 		game.physics.arcade.overlap(game.player, this.keys, this.collectItem, null, this);
-		game.physics.arcade.collide(game.player, this.door4);
-
-		if(key4 === true){
-			this.door4.body.immovable = false;
-		} else{
-			this.door4.body.immovable = true;
-		}
+		game.physics.arcade.overlap(game.player, this.key2, this.keepKey, null, this);
+		game.physics.arcade.overlap(game.player, this.key2, this.collectItem, null, this);
 		//game.physics.arcade.overlap(game.player, this.warps, this.warp, null, this);
 
 		//this.introDialogue();//this calls the method that displays the tutorial
+	},
+
+	keepKey: function () {
+		key2 = true;
+		console.log('player got key1');
 	},
 	colPE: function (player, enemy) {
 		player.kill();
@@ -248,7 +249,7 @@ Play.prototype = {
 		var wordsArray = new Array();
 		wordsArray[0] = "Use arrow keys to move\nPress [D] to continue";
 		wordsArray[1] = "Press [F] to turn on/off the lights\nPress [D] to continue";
-		wordsArray[2] = "";
+		wordsArray[2] = "Stand on Help boxes to ask for help\nPress [D] to continue";
 		wordsArray[3] = "";
 
 		if (this.i < 3 && game.input.keyboard.justPressed(Phaser.Keyboard.D)) {

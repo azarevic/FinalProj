@@ -1,27 +1,24 @@
-//Play state
+//Level2 state
 
-var Play = function (game) {
+var Level2 = function (game) {
 	this.i = 0; //variable for tutorial text loop
 	this.bitmapBleed = 64; //how much bigger the bitmap is than the camera
-	this.levelNumber = 1;
+	this.levelNumber = 2;
 };
-Play.prototype = {
+Level2.prototype = {
 	create: function () {
-		console.log("level: " + this.levelNumber);
 		//stop music
 		this.sound.stopAll();
 		this.words = '' + this.words;//dialog/tutorial
 		//map
-		this.map = game.add.tilemap('level1');
-		this.map.addTilesetImage('tileset1', 'tilesheet1');
+		this.map = game.add.tilemap('level2');
+		this.map.addTilesetImage('tileset', 'tilesheet1');
 		this.map.addTilesetImage('decorations', 'tilesheet2');
 		this.floorLayer = this.map.createLayer('ground');
 		this.wallsLayer = this.map.createLayer('walls');
 		this.decorationsLayer = this.map.createLayer('decorations');
 		this.map.setCollisionByExclusion([], true, this.wallsLayer);
 		this.wallsLayer.resizeWorld();
-
-		this.myStage = game.add.group();
 
 		console.log("Play");
 		//adding physics
@@ -31,19 +28,13 @@ Play.prototype = {
 		game.stage.backgroundColor = "#000000";
 
 		//adding a group for the objs the game.player can hear
-		this.noiseMakers = game.add.group();
+		this.noiseMakers = game.add.group(); 
 		this.noiseMakers.enableBody = true;
 		//group for solid objects
 		this.keys = game.add.group();
 		this.keys.enableBody = true;
 		this.locks = game.add.group();
 		this.locks.enableBody = true;
-
-		this.door4 = game.add.sprite(288, 512, 'door');
-		game.physics.enable(this.door4);
-		this.door4.body.immovable = true;
-		this.door4.body.allowGravity = false;
-		this.addObjects();
 		//add Notes
 		this.notes = game.add.group();
 		this.notes.enableBody = true;
@@ -59,7 +50,12 @@ Play.prototype = {
 		//adding some walls to test ray tracing
 		this.walls = game.add.group();
 		this.walls.enableBody = true;
-
+		this.painting = game.add.sprite(736, 1536, 'painting');//painting for puzzle
+		this.painting.enableBody = true;
+		game.physics.enable(this.painting);
+		this.painting.body.immovable = true;
+		this.painting.body.allowGravity = false;
+		this.addObjects();
 		//Create a bitmap texture for drawing light cones
 		//this should go at the bottom to cover all srpites 
 		//that will be in darkness
@@ -68,10 +64,8 @@ Play.prototype = {
 		this.bitmap.context.strokeStyle = 'rgb(255, 255, 255)';
 		var lightBitmap = game.add.image(0, 0, this.bitmap);
 
-		//adding blend mode to bitmap (requires webgl on the browser)
-		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
-
-		//adding player
+		//adding game.player
+		console.log(game.player);
 		if (!game.player.parent)
         {
 			this.add.existing(game.player);
@@ -81,21 +75,20 @@ Play.prototype = {
 		this.players = game.add.group();
 		this.players.add(game.player);
 		//game.player = new Player(game, "p1");
-		// game.player = player;
-		// console.log(this.p)
 		// game.player.setMonster(this.monster);
-		// game.add.existing(game.player);
-		// this.game.playerGroup = game.add.group();
-		// this.game.playerGroup.add(game.player);
+		//game.add.existing(game.player);
+		//the camera follows the game.player object
+		game.camera.follow(game.player, 0, 0.5, 0.5);
 
 		this.addNotes();
 		this.addWarpZones();
-		//the camera follows the game.player object
-		game.camera.follow(game.player, 0, 0.5, 0.5);
+		//adding blend mode to bitmap (requires webgl on the browser)
+		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
 
 		//this.showNarration();//shows dialog/information/tutorial
 	},
 	update: function () {
+		//console.log(game.player);
 		// game.player.move();
 		// game.player.checkLight();
 		game.player.listen(this.noiseMakers);
@@ -112,15 +105,14 @@ Play.prototype = {
 		game.physics.arcade.collide(game.player, this.locks);
 		game.physics.arcade.collide(game.player, this.warps);
 		game.physics.arcade.overlap(game.player, this.keys, this.collectItem, null, this);
-		game.physics.arcade.collide(game.player, this.door4);
-
-		if(key4 === true){
-			this.door4.body.immovable = false;
-		} else{
-			this.door4.body.immovable = true;
+		//console.log(lightening);
+		this.game.physics.arcade.collide(game.player, this.painting);
+		this.introDialogue();//this calls the method that displays the tutorial
+		if (lightening === false) {
+			this.painting.body.immovable = false;
+		} else {
+			this.painting.body.immovable = true;
 		}
-		//game.physics.arcade.overlap(game.player, this.warps, this.warp, null, this);
-
 		//this.introDialogue();//this calls the method that displays the tutorial
 	},
 	colPE: function (player, enemy) {
@@ -239,16 +231,16 @@ Play.prototype = {
 	showNarration: function () {
 		//this function shows the tutorial and other information text  
 		var text = '0';
-		style = { font: '40px Almendra', fill: '#fff', align: 'center' };
+		style = { font: '40px Arial', fill: '#fff', align: 'center' };
 		this.conversationText = this.game.add.text(120, 510, text, style);
 		this.conversationText.fixedToCamera = true;
 	},
 	introDialogue: function () {
 		//tutorial text, this adds the text
 		var wordsArray = new Array();
-		wordsArray[0] = "Use arrow keys to move\nPress [D] to continue";
-		wordsArray[1] = "Press [F] to turn on/off the lights\nPress [D] to continue";
-		wordsArray[2] = "";
+		wordsArray[0] = "Use arrow keys to move\nPress D to continue";
+		wordsArray[1] = "Press F to turn on/off the lights\nPress D to continue";
+		wordsArray[2] = "Stand on Help boxes to ask for help\nPress D to continue";
 		wordsArray[3] = "";
 
 		if (this.i < 3 && game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
@@ -261,31 +253,6 @@ Play.prototype = {
 		player.pickUpItem(item);
 		player.displayInventory();
 	},
-	// warp: function (game.player, warpZone) {
-	// 	console.log("repos!!!!");
-	// 	warpZone.reposgame.player();
-
-	// 	// this.myStage.forEachAlive(function (item) {
-	// 	// 	//console.log(item);
-	// 	// 	for (let i = 0; i < item.ids.length; i++) {
-	// 	// 		item.destroy();	
-	// 	// 	}
-	// 	// }, this);
-	// 	//map
-	// 	this.map = game.add.tilemap('level1');
-	// 	this.map.addTilesetImage('tileset1', 'tilesheet1');
-	// 	this.map.addTilesetImage('decorations', 'tilesheet2');
-	// 	this.floorLayer = this.map.createLayer('ground');
-	// 	this.wallsLayer = this.map.createLayer('walls');
-	// 	this.decorationsLayer = this.map.createLayer('decorations');
-	// 	this.map.setCollisionByExclusion([], true, this.wallsLayer);
-	// 	this.wallsLayer.resizeWorld();
-
-	// 	// this.myStage.add(this.map);
-	// 	// this.myStage.add(this.floorLayer);
-	// 	// this.myStage.add(this.wallsLayer);
-	// 	// this.myStage.add(this.decorationsLayer);
-	// },
 	displayKeysNeeded: function (group) {
 		group.forEachAlive(function (item) {
 			console.log(item);

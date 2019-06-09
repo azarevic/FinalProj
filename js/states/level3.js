@@ -1,19 +1,19 @@
 //Play state
 
-var Play = function (game) {
+var Level3 = function (game) {
 	this.i = 0; //variable for tutorial text loop
 	this.bitmapBleed = 64; //how much bigger the bitmap is than the camera
-	this.levelNumber = 1;
+	this.levelNumber = 3;
 };
-Play.prototype = {
+Level3.prototype = {
 	create: function () {
-		console.log("level: " + this.levelNumber);
+		console.log("level: " + this.levelNumber);		
 		//stop music
 		this.sound.stopAll();
 		this.words = '' + this.words;//dialog/tutorial
 		//map
-		this.map = game.add.tilemap('level1');
-		this.map.addTilesetImage('tileset1', 'tilesheet1');
+		this.map = game.add.tilemap('level3');
+		this.map.addTilesetImage('tileset', 'tilesheet1');
 		this.map.addTilesetImage('decorations', 'tilesheet2');
 		this.floorLayer = this.map.createLayer('ground');
 		this.wallsLayer = this.map.createLayer('walls');
@@ -39,10 +39,25 @@ Play.prototype = {
 		this.locks = game.add.group();
 		this.locks.enableBody = true;
 
-		this.door4 = game.add.sprite(288, 512, 'door');
-		game.physics.enable(this.door4);
-		this.door4.body.immovable = true;
-		this.door4.body.allowGravity = false;
+		this.ending = game.add.sprite(32, 1023, 'end');
+
+		this.door1 = game.add.sprite(1728, 736, 'door');
+		this.key1 = game.add.sprite(128, 1856, 'key');
+		this.door3 = game.add.sprite(256, 736, 'door');
+		this.finalDoor = game.add.sprite(32, 1023, 'door2');
+		game.physics.enable([this.door1, this.key1, this.door3, this.finalDoor, this.ending]);
+		this.door1.body.immovable = true;
+		this.key1.body.immovable = true;
+		this.door3.body.immovable = true;
+		this.finalDoor.body.immovable = true;
+		this.door1.body.allowGravity = false;
+		this.key1.body.allowGravity = false;
+		this.door3.body.allowGravity = false;
+		this.ending.body.immovable = true;
+		this.ending.body.allowGravity = false;
+		this.finalDoor.body.allowGravity = false;
+
+
 		this.addObjects();
 		//add Notes
 		this.notes = game.add.group();
@@ -112,16 +127,41 @@ Play.prototype = {
 		game.physics.arcade.collide(game.player, this.locks);
 		game.physics.arcade.collide(game.player, this.warps);
 		game.physics.arcade.overlap(game.player, this.keys, this.collectItem, null, this);
-		game.physics.arcade.collide(game.player, this.door4);
+		game.physics.arcade.overlap(game.player, this.key1, this.keepKey, null, this);
+		game.physics.arcade.overlap(game.player, this.key1, this.collectItem, null, this);
+		game.physics.arcade.overlap(game.player, this.ending, this.finish, null, this);
+		game.physics.arcade.collide(game.player, this.door1);
+		game.physics.arcade.collide(game.player, this.door3);
+		game.physics.arcade.collide(game.player, this.finalDoor);
 
-		if(key4 === true){
-			this.door4.body.immovable = false;
+		if(key1 === true){
+			this.door1.body.immovable = false;
 		} else{
-			this.door4.body.immovable = true;
+			this.door1.body.immovable = true;
 		}
+		if(key3 === true){
+			this.door3.body.immovable = false;
+		} else{
+			this.door3.body.immovable = true;
+		}
+
+		if(fd1 === true && fd2 === true && fd3 === true && fd4 === true){
+			this.finalDoor.body.immovable = false;
+		} else{
+			this.finalDoor.body.immovable = true;
+		}
+
+
 		//game.physics.arcade.overlap(game.player, this.warps, this.warp, null, this);
 
 		//this.introDialogue();//this calls the method that displays the tutorial
+	},
+	finish: function () {
+		this.game.state.start("Outro", false, false);
+	},
+	keepKey: function () {
+		key1 = true;
+		console.log('player got key1');
 	},
 	colPE: function (player, enemy) {
 		player.kill();
@@ -248,7 +288,7 @@ Play.prototype = {
 		var wordsArray = new Array();
 		wordsArray[0] = "Use arrow keys to move\nPress [D] to continue";
 		wordsArray[1] = "Press [F] to turn on/off the lights\nPress [D] to continue";
-		wordsArray[2] = "";
+		wordsArray[2] = "Stand on Help boxes to ask for help\nPress [D] to continue";
 		wordsArray[3] = "";
 
 		if (this.i < 3 && game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
