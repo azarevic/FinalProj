@@ -26,11 +26,7 @@ var Intro = function(game){
 	this.dialogText = null;			// the actual dialog text
 	this.nextText = null;			// player prompt text to continue typing
 
-	// character variables
-	this.thou = null;
-	this.mother = null;
-	this.father = null;
-	this.narrator = null;
+
 };
 
 Intro.prototype = {
