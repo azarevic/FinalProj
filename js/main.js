@@ -41,10 +41,10 @@ var key4 = false;
 var key5 = false;
 var key6 = false;
 
-var fd1 = true;//false;
-var fd2 = true;//false;
-var fd3 = true; //false;
-var fd4 = true;//false;
+var fd1 = false;
+var fd2 = false;
+var fd3 = false;
+var fd4 = false;
 
 var musicisPlaying = false;
 game = new Phaser.Game(1280, 720, Phaser.AUTO, "finalProto", { preload: preload, player: null });
