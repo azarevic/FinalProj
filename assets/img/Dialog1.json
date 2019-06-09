@@ -87,6 +87,43 @@
 		{	
 			"speaker" : "narrator",
 			"dialog" : "XXXVI Coetus hath taken over here, they attempted to use this temple to manifest their god to this earth, they dispatch everyone yet thou alone remain, you stand here alone, all alone, with nobody by thy side and the only company you keep is the thoughts residing in thy mind."
+		},
+		{	
+			"speaker" : "exspiravit",
+			"dialog" : "You need to get out of here as soon as possible, so listen to me and pay close attention. ",
+			"newSpeaker" : "true"
+		},
+		{	
+			"speaker" : "exspiravit",
+			"dialog" : "You need to find the keys of every door because you are going to need them, you won’t be able to discard the keys because you will need them, constantly."
+		},
+		{	
+			"speaker" : "exspiravit",
+			"dialog" : "The exit of this church is sealed by the wrath of both gods; the god from heaven and the god from hell. "
+		},
+		{	
+			"speaker" : "exspiravit",
+			"dialog" : "You will need to retrieve the four crosses and use them to open the door by the altar. "
+		},
+		{	
+			"speaker" : "exspiravit",
+			"dialog" : "Remember how I mentioned the gods, the god from heaven has already helped you by dropping cross by the map, however,"
+		},
+		{	
+			"speaker" : "exspiravit",
+			"dialog" : "You will need to ask the other god for a favor, and for that, you must find the upside-down painting, turn off your lights and just go through it"
+		},
+		{	
+			"speaker" : "exspiravit",
+			"dialog" : "You will be spawned in a different dimension, once you are there, find keys, and then you’ll get to a crypt with coffins, you will use them to contact the other god."
+		},
+		{	
+			"speaker" : "exspiravit",
+			"dialog" : "Dial the number of the beast (666); stand on a coffin, press D, wait for the bell to ring, then wait about three seconds, then go to the next coffin and repeat. If you mess up and call a higher number, it will reset back to zero. "
+		},
+		{	
+			"speaker" : "exspiravit",
+			"dialog" : "And you will be able to try again. Remember, D = 500, C = 100, L = 50; X = 10; V = 5; I = 1."
 		}
 	]
 ]
