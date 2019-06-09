@@ -1,6 +1,6 @@
 //Player prefab
 
-function Player(game, key, monster) {
+function Player(game, key) {
     Phaser.Sprite.call(this, game, 96, 1448, 'playspr', key);
 
     //properties
@@ -35,11 +35,15 @@ function Player(game, key, monster) {
     this.pickUpSound = game.add.audio("pickUp");
     this.fading = true;
     //monster activation
-    this.monster = monster;
+    this.monster;
     //inventory
     this.inventory = [];
     this.inventoryDisplay = game.add.group();
     this.camOffSet = 32;
+
+    //this.spawnPoint;
+
+    //console.log(this);
 }
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor = Player;
@@ -173,4 +177,7 @@ Player.prototype.displayInventory = function () {
     for (let i = 0; i < this.inventory.length; i++) {
         console.log("	" + this.inventory[i]);
     }
+}
+Player.prototype.setMonster = function(monster) {
+    this.monster = monster;
 }

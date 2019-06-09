@@ -1,5 +1,3 @@
-//Level5 state
-
 var Level6 = function (game) {
 	this.i = 0; //variable for tutorial text loop
 	this.bitmapBleed = 64; //how much bigger the bitmap is than the camera
@@ -8,7 +6,7 @@ Level6.prototype = {
 	create: function () {
 		//stop music
 		this.sound.stopAll();
-		this.words = '' + this.words;//dialog/tutorial
+		//this.words = '' + this.words;//dialog/tutorial
 		//map
 		this.map = game.add.tilemap('level6');
 		this.map.addTilesetImage('tileset', 'tilesheet1');
@@ -18,7 +16,7 @@ Level6.prototype = {
 		this.decorationsLayer = this.map.createLayer('decorations');
 		this.map.setCollisionByExclusion([], true, this.wallsLayer);
 		this.wallsLayer.resizeWorld();
-
+		this.pickUpSound = game.add.audio("pickUp");
 		console.log("Play");
 		//adding physics
 		game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -43,6 +41,51 @@ Level6.prototype = {
 		//adding some walls to test ray tracing
 		this.walls = game.add.group();
 		this.walls.enableBody = true;
+		
+		this.coffinI = game.add.sprite(128, 1344, 'coffinI');
+		game.physics.enable(this.coffinI);
+    		this.coffinI.body.immovable = true;
+    		this.coffinI.body.allowGravity = false;
+
+		this.coffinII = game.add.sprite(128, 1504, 'coffinII');
+		game.physics.enable(this.coffinII);
+    		this.coffinII.body.immovable = true;
+    		this.coffinII.body.allowGravity = false;
+
+		this.coffinIII = game.add.sprite(448, 1600, 'coffinIII');
+		game.physics.enable(this.coffinIII);
+    		this.coffinIII.body.immovable = true;
+    		this.coffinIII.body.allowGravity = false;
+
+		this.coffinV = game.add.sprite(736, 1600, 'coffinV');
+		game.physics.enable(this.coffinV);
+    		this.coffinV.body.immovable = true;
+    		this.coffinV.body.allowGravity = false;
+
+		this.coffinX = game.add.sprite(1024, 1600, 'coffinX');
+		game.physics.enable(this.coffinX);
+    		this.coffinX.body.immovable = true;
+    		this.coffinX.body.allowGravity = false;
+
+		this.coffinL = game.add.sprite(1344, 1504, 'coffinL');
+		game.physics.enable(this.coffinL);
+    		this.coffinL.body.immovable = true;
+    		this.coffinL.body.allowGravity = false;
+
+		this.coffinC = game.add.sprite(1344, 1376, 'coffinC');
+		game.physics.enable(this.coffinC);
+    		this.coffinC.body.immovable = true;
+    		this.coffinC.body.allowGravity = false;
+
+    		this.coffinD = game.add.sprite(1024, 1344, 'coffinD');
+		game.physics.enable(this.coffinD);
+    		this.coffinD.body.immovable = true;
+    		this.coffinD.body.allowGravity = false;
+
+    		this.coffinLast = game.add.sprite(736, 1440, 'coffin?');
+    		game.physics.enable(this.coffinLast);
+    		this.coffinLast.body.immovable = true;
+    		this.coffinLast.body.allowGravity = false;
 
 		this.addObjects();
 		//Create a bitmap texture for drawing light cones
@@ -53,33 +96,127 @@ Level6.prototype = {
 		this.bitmap.context.strokeStyle = 'rgb(255, 255, 255)';
 		var lightBitmap = game.add.image(0, 0, this.bitmap);
 
-		//adding player
-		this.player = new Player(game, "p1", this.monster);
-		game.add.existing(this.player);
+		// //adding player
+		if (!game.player.parent)
+        {
+			this.add.existing(game.player);
+			console.log(game.player);
+		}
+		game.player.setMonster(this.monster);
+		this.players = game.add.group();
+		this.players.add(game.player);
+		// game.player = new Player(game, "p1", this.monster);
+		// game.add.existing(game.player);
 		//the camera follows the player object
-		game.camera.follow(this.player, 0, 0.5, 0.5);
+		game.camera.follow(game.player, 0, 0.5, 0.5);
 
 		//adding blend mode to bitmap (requires webgl on the browser)
 		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
 		
-		this.showNarration();//shows dialog/information/tutorial
+		//this.showNarration();//shows dialog/information/tutorial
 	},
 	update: function () {
-		this.player.listen(this.noiseMakers);
+		game.player.listen(this.noiseMakers);
 		this.rayCast();
-		game.physics.arcade.overlap(this.player, this.monster, this.colPE, null, this);
+		game.physics.arcade.overlap(game.player, this.monster, this.colPE, null, this);
 		//map
-		game.physics.arcade.collide(this.player, this.mapLayer);
+		game.physics.arcade.collide(game.player, this.mapLayer);
 		//This text updates with dialog and information
-		this.conversationText.text = this.words;
+		//this.conversationText.text = this.words;
 
 		//map & object collision
-		game.physics.arcade.collide(this.player, this.walls);
-		game.physics.arcade.collide(this.player, this.wallsLayer);
-		game.physics.arcade.collide(this.player, this.locks);
-		game.physics.arcade.overlap(this.player, this.keys, this.collectItem, null, this);
+		game.physics.arcade.collide(game.player, this.walls);
+		game.physics.arcade.collide(game.player, this.wallsLayer);
+		game.physics.arcade.collide(game.player, this.locks);
+		game.physics.arcade.overlap(game.player, this.keys, this.collectItem, null, this);
 		
-		this.introDialogue();//this calls the method that displays the tutorial
+		game.physics.arcade.overlap(game.player, this.coffinI, this.touchedCoffinI, null, this);
+		game.physics.arcade.overlap(game.player, this.coffinII, this.touchedCoffinII, null, this);
+		game.physics.arcade.overlap(game.player, this.coffinIII, this.touchedCoffinIII, null, this);
+		game.physics.arcade.overlap(game.player, this.coffinV, this.touchedCoffinV, null, this);
+		game.physics.arcade.overlap(game.player, this.coffinX, this.touchedCoffinX, null, this);
+		game.physics.arcade.overlap(game.player, this.coffinL, this.touchedCoffinL, null, this);
+		game.physics.arcade.overlap(game.player, this.coffinC, this.touchedCoffinC, null, this);
+		game.physics.arcade.overlap(game.player, this.coffinD, this.touchedCoffinD, null, this);
+		game.physics.arcade.collide(game.player, this.coffinLast);
+		
+		if(coff > 666){
+			//console.log("u exceeded");
+			coff = 0;
+		}
+		if(coff === 666){
+			console.log("u got it right");
+			this.coffinLast.destroy();
+			coff = 0;
+		}
+		
+		//this.introDialogue();//this calls the method that displays the tutorial
+	},
+		touchedCoffinI: function (player, coffin) {
+		
+		//console.log('touchedCoffin');
+			if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+				 this.pickUpSound.play('', 0, 0.8, false, false);
+				 
+			coff = coff + 1;
+		}
+		//console.log(coff);
+	},
+	touchedCoffinII: function (player, coffin) {//this one should never be used
+		//console.log('touchedCoffin');
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+			 this.pickUpSound.play('', 0, 0.8, false, false);
+			coff = coff + 2;
+		}
+		//console.log(coff);
+	},
+	touchedCoffinIII: function (player, coffin) {//this one sould never be used
+		//console.log('touchedCoffin');
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+			 this.pickUpSound.play('', 0, 0.8, false, false);
+			coff = coff + 3;
+		}
+		//console.log(coff);
+	},
+	touchedCoffinV: function (player, coffin) {
+		//console.log('touchedCoffin');
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+			 this.pickUpSound.play('', 0, 0.8, false, false);
+			coff = coff + 5;
+		}
+		//console.log(coff);
+	},
+	touchedCoffinX: function (player, coffin) {
+		//console.log('touchedCoffin');
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+			 this.pickUpSound.play('', 0, 0.8, false, false);
+			coff = coff + 10;
+		}
+		//console.log(coff);
+	},
+	touchedCoffinC: function (player, coffin) {
+		//console.log('touchedCoffin');
+			if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+				 this.pickUpSound.play('', 0, 0.8, false, false);
+			coff = coff + 100;
+		}
+
+	},
+	touchedCoffinL: function (player, coffin) {
+			if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+				 this.pickUpSound.play('', 0, 0.8, false, false);
+			coff = coff + 50;
+		}
+
+		//console.log('touchedCoffin');
+	},
+	touchedCoffinD: function (player, coffin) {
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+			this.pickUpSound.play('', 0, 0.8, false, false);
+			coff = coff + 500;
+		}
+
+		//console.log('touchedCoffin');
 	},
 	colPE: function (player, enemy) {
 		player.kill();
@@ -91,16 +228,16 @@ Level6.prototype = {
 	//adapted from: https://gamemechanicexplorer.com/#raycasting-2
 	rayCast: function () {
 		//fill the entire light bitmap with a dark shadow color.
-		this.bitmap.context.fillStyle = 'rgb(0, 0, 0)';//'rgb(255, 255, 255)';
+		this.bitmap.context.fillStyle = 'rgb(255, 255, 255)';//'rgb(0, 0, 0)';//'rgb(255, 255, 255)';
 		this.bitmap.context.fillRect(game.camera.x - this.bitmapBleed / 2, game.camera.y - this.bitmapBleed / 2, game.camera.width + this.bitmapBleed, game.camera.height + this.bitmapBleed);
-		var rayLength = (this.player.lightSwitch) ? game.rnd.integerInRange(-this.player.flickerAmount, this.player.LIGHT_FLICKER_BASE) : 0; //animates the light flickering, this will be used by how close you are to the monster
+		var rayLength = (game.player.lightSwitch) ? game.rnd.integerInRange(-game.player.flickerAmount, game.player.LIGHT_FLICKER_BASE) : 0; //animates the light flickering, this will be used by how close you are to the monster
 		// Ray casting!
 		// Cast rays at intervals in a large circle around the light.
 		// Save all of the intersection points or ray end points if there was no intersection.
 		var points = [];
 		for (var a = 0; a < Math.PI * 2; a += Math.PI / 360) {
-			var ray = new Phaser.Line(this.player.x, this.player.y,
-				this.player.x + Math.cos(a) * this.player.lightRange, this.player.y + Math.sin(a) * this.player.lightRange);//last 2 parameters indicate length
+			var ray = new Phaser.Line(game.player.x, game.player.y,
+				game.player.x + Math.cos(a) * game.player.lightRange, game.player.y + Math.sin(a) * game.player.lightRange);//last 2 parameters indicate length
 
 			// Check if the ray intersected any walls
 			var intersect = this.getWallIntersection(ray);
@@ -114,8 +251,8 @@ Level6.prototype = {
 		}
 		// Draw circle of light with a soft edge
 		var gradient = this.bitmap.context.createRadialGradient(
-			this.player.x, this.player.y, this.player.lightRange * 0.75 + rayLength,
-			this.player.x, this.player.y, this.player.lightRange + rayLength);
+			game.player.x, game.player.y, game.player.lightRange * 0.75 + rayLength,
+			game.player.x, game.player.y, game.player.lightRange + rayLength);
 		gradient.addColorStop(0, 'rgba(255, 225, 200, 1.0)');
 		gradient.addColorStop(1, 'rgba(255, 225, 200, 0.0)');
 		// Connect the dots and fill in the shape, which are cones of light,
@@ -194,7 +331,7 @@ Level6.prototype = {
 			}
 		}
 	},
-	showNarration: function() {
+	/*showNarration: function() {
     	//this function shows the tutorial and other information text  
     	var text = '0';
         style = { font: '40px Arial', fill: '#fff', align: 'center' };
@@ -214,10 +351,10 @@ Level6.prototype = {
 			
 		} 
 		this.words = wordsArray[this.i];
-	},
+	},*/
 	collectItem: function (player, item) {
 		player.pickUpItem(item);
-		this.player.displayInventory();
+		game.player.displayInventory();
 	},
 	displayKeysNeeded: function (group) {
 		group.forEachAlive(function (item) {

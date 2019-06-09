@@ -1,12 +1,12 @@
 // Load state
 
-var Load = function(game) {};
+var Load = function (game) { };
 Load.prototype = {
-	preload: function() {
+	preload: function () {
 		console.log("Load");
 
 		// setup loading bar
-		var loadingBar = this.add.sprite(game.width/2 - 160, game.height/2, "loading");
+		var loadingBar = this.add.sprite(game.width / 2 - 160, game.height / 2, "loading");
 		game.load.setPreloadSprite(loadingBar);
 
 		// load graphics assets
@@ -16,9 +16,9 @@ Load.prototype = {
 
 		// menu light
 		game.load.atlas('light', 'light.png', 'light.json');
-		
+
 		//placeholder map and objects
-        game.load.image("blueEye", "blueEye.png");
+		game.load.image("blueEye", "blueEye.png");
 		game.load.image("yellowEye", "yellowEye.png");
 		game.load.image("key", "finalKey.png");
 		game.load.image('door', 'finalDoor.png');
@@ -26,7 +26,8 @@ Load.prototype = {
 		game.load.tilemap('level', 'trialMap.json', null, Phaser.Tilemap.TILED_JSON);
 		game.load.spritesheet('tilesheet', 'trialSprites.png', 32, 32);
 		game.load.image("note", "note.png");
-		
+		game.load.image("warp", "warpArea.png");
+
 		game.load.path = "assets/maps/";
 		//placeholder map and objects
 
@@ -40,7 +41,7 @@ Load.prototype = {
 		game.load.tilemap('level8', 'map8.json', null, Phaser.Tilemap.TILED_JSON);
 		game.load.spritesheet('tilesheet1', 'spritesheetfinal_.png', 32, 32);
 		game.load.spritesheet('tilesheet2', 'decorations.png', 32, 32);
-		
+
 		// load audio assets
 		game.load.path = "assets/audio/";
 		game.load.audio("monsterL", "monsterL.mp3");
@@ -48,8 +49,9 @@ Load.prototype = {
 		game.load.audio("pickUp", "pickUp.mp3");
 		game.load.audio("chase", "ISeeU.mp3");
 		game.load.audio("menue", "menue.wav");
+
 	},
-	create: function() {
+	create: function () {
 		game.state.start("MainMenue");
 	}
 };

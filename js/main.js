@@ -30,14 +30,15 @@
 "use strict";
 
 //define globals
+var coff = 0;//this is for the coffin puzzle
 var game;
-
+var lightening = true;
 var blueJewel = false;
 var yellowJewel = false;
 var keys1 = false;
 var keys2 = false;
 var musicisPlaying = false;
-game = new Phaser.Game(1280, 720, Phaser.AUTO, "finalProto", { preload: preload });
+game = new Phaser.Game(1280, 720, Phaser.AUTO, "finalProto", { preload: preload, player: null });
 
 window.onload = function () {
 	game.scale.pageAlignHorizontally = true;
@@ -48,7 +49,7 @@ window.onload = function () {
 	game.state.add("MainMenue", MainMenue);
 	game.state.add("Tutorial", Tutorial);
 	game.state.add("Credits", Credits);
-	game.state.add("Play", Play);
+	game.state.add("Level1", Play);
 	game.state.add("Level2", Level2);
 	game.state.add("Level3", Level3);
 	game.state.add("Level4", Level4);
@@ -78,14 +79,55 @@ function calcAngleDegrees(f, i) {//final - initial
 }
 //array sourcery
 var objs = [
-	0, "statue", new Phaser.Point(1312, 448), 
-	1, "blueEye", new Phaser.Point(1480, 1150), //new Phaser.Point(128, 1520)
-	1, "yellowEye", new Phaser.Point(250, 950), 
-	0, "door", new Phaser.Point(416, 1240),
-	2, "key", new Phaser.Point(360, 256), //new Phaser.Point(292, 1520),
-	0, "door", new Phaser.Point(832, 121),
-	3, "key", new Phaser.Point(1312, 448)									//placeHolder for a droped key
+
 ];
+// var objs = [
+// 	0, "statue", new Phaser.Point(1312, 448),
+// 	1, "blueEye", new Phaser.Point(1480, 1150), //new Phaser.Point(128, 1520)
+// 	1, "yellowEye", new Phaser.Point(250, 950),
+// 	0, "door", new Phaser.Point(416, 1240),
+// 	2, "key", new Phaser.Point(360, 256), //new Phaser.Point(292, 1520),
+// 	0, "door", new Phaser.Point(832, 121),
+// 	3, "key", new Phaser.Point(1312, 448)									//placeHolder for a droped key
+// ];
 var notes = [
 	new Phaser.Point(128, 1500), "hell o"
+];
+var warpZones = [
+	[],
+	//level1
+	[
+		[new Phaser.Point(1568, 896), new Phaser.Point(64, 1440), "Level2"] // new Phaser.Point(250, 896)
+	],
+	//level2
+
+	[
+		[new Phaser.Point(-64, 1440), new Phaser.Point(1536, 896), "Level1"],
+		[new Phaser.Point(736, 1568), new Phaser.Point(736, 96), "Level6"],
+		[new Phaser.Point(832, -64), new Phaser.Point(640, 2048), "Level3"]
+	],
+	//level3
+	[
+		[new Phaser.Point(640, 2112), new Phaser.Point(864, -670), "Level2"],
+		[new Phaser.Point(1600, 1472), new Phaser.Point(96, -264), "Level5"],
+		[new Phaser.Point(256, 576), new Phaser.Point(152, 1400), "Level7"],
+		[new Phaser.Point(1728, 608), new Phaser.Point(992, 1568), "Level4"]
+	],
+	//level4
+	[
+		[new Phaser.Point(960, 1596), new Phaser.Point(1760, 720), "Level3"]
+	],
+	//level5
+	[
+		[new Phaser.Point(192, 0), new Phaser.Point(1632, 1432), "Level3"],
+		
+	],
+	//level6
+	[],
+	//level7
+	[
+		[new Phaser.Point(128, 1430), new Phaser.Point(256, 720), "Level3"],
+	],
+	//level8
+	[]
 ];
