@@ -3,7 +3,7 @@
 var Level8 = function (game) {
 	this.i = 0; //variable for tutorial text loop
 	this.bitmapBleed = 64; //how much bigger the bitmap is than the camera
-	this.levelNumber = 7;
+	this.levelNumber = 8;
 };
 Level8.prototype = {
 	create: function () {
