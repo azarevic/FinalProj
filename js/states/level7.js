@@ -122,22 +122,23 @@ Level7.prototype = {
 		game.physics.arcade.overlap(game.player, this.keys, this.collectItem, null, this);
 		game.physics.arcade.overlap(game.player, this.key4, this.keepKey, null, this);
 		game.physics.arcade.overlap(game.player, this.key4, this.collectItem, null, this);
-		game.physics.arcade.collide(game.player, this.door5);
-		game.physics.arcade.collide(game.player, this.door6);
+		//game.physics.arcade.collide(game.player, this.door5);
+		//game.physics.arcade.collide(game.player, this.door6);
 
-		if(key5 === true){
-			this.door5.body.immovable = false;
-		} else{
-			this.door5.body.immovable = true;
+		if(key5 === false){
+			game.physics.arcade.collide(game.player, this.door5);
+		} 
+		if(key6 === false){
+			game.physics.arcade.collide(game.player, this.door6);
 		}
-		if(key6 === true){
-			this.door6.body.immovable = false;
-		} else{
-			this.door6.body.immovable = true;
-		}
+		game.physics.arcade.overlap(game.player, this.door5, this.openDoor, null, this);
+		game.physics.arcade.overlap(game.player, this.door6, this.openDoor, null, this);
 		//game.physics.arcade.overlap(game.player, this.warps, this.warp, null, this);
 
 		//this.introDialogue();//this calls the method that displays the tutorial
+	},
+	openDoor: function (player, door) {
+		door.destroy();
 	},
 	keepKey: function () {
 		key4 = true;
