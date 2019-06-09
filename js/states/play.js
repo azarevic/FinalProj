@@ -115,14 +115,18 @@ Play.prototype = {
 		game.physics.arcade.overlap(game.player, this.keys, this.collectItem, null, this);
 		game.physics.arcade.collide(game.player, this.door4);
 
-		if(key4 === true){
-			this.door4.body.immovable = false;
-		} else{
-			this.door4.body.immovable = true;
-		}
+		if(key4 === false){
+			//this.door4.body.immovable = true;
+			game.physics.arcade.collide(game.player, this.door4);
+		} 
+		game.physics.arcade.overlap(game.player, this.door4, this.openDoor, null, this);
+		
 		//game.physics.arcade.overlap(game.player, this.warps, this.warp, null, this);
 
 		//this.introDialogue();//this calls the method that displays the tutorial
+	},
+	openDoor: function (player, door) {
+		door.destroy();
 	},
 	colPE: function (player, enemy) {
 		player.kill();
