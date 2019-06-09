@@ -48,8 +48,8 @@ MainMenue.prototype = {
 		if(game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
 			this.menuMusic.stop();
 			musicisPlaying = false;
-			game.state.start("Intro");
-			//game.state.start("Play", true, false, customParam1, customParam2);﻿
+			//game.state.start("Intro");
+			game.state.start("Level1");			
 		}
 	}
 };

@@ -74,6 +74,7 @@ Level2.prototype = {
 		game.player.setMonster(this.monster);
 		this.players = game.add.group();
 		this.players.add(game.player);
+		this.players.add(game.player.inventoryDisplay);
 		//game.player = new Player(game, "p1");
 		// game.player.setMonster(this.monster);
 		//game.add.existing(game.player);

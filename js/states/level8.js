@@ -87,6 +87,7 @@ Level8.prototype = {
 		game.player.setMonster(this.monster);
 		this.players = game.add.group();
 		this.players.add(game.player);
+		this.players.add(game.player.inventoryDisplay);
 		//game.player = new Player(game, "p1");
 		// game.player = player;
 		// console.log(this.p)

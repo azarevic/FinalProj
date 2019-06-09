@@ -80,6 +80,7 @@ Play.prototype = {
 		game.player.setMonster(this.monster);
 		this.players = game.add.group();
 		this.players.add(game.player);
+		this.players.add(game.player.inventoryDisplay);
 		//game.player = new Player(game, "p1");
 		// game.player = player;
 		// console.log(this.p)
@@ -133,7 +134,7 @@ Play.prototype = {
 	//adapted from: https://gamemechanicexplorer.com/#raycasting-2
 	rayCast: function () {
 		//fill the entire light bitmap with a dark shadow color.
-		this.bitmap.context.fillStyle = 'rgb(0, 0, 0)';//'rgb(0, 0, 0)';//'rgb(255, 255, 255)';
+		this.bitmap.context.fillStyle = 'rgb(255, 255, 255)';//'rgb(0, 0, 0)';//'rgb(255, 255, 255)';
 		this.bitmap.context.fillRect(game.camera.x - this.bitmapBleed / 2, game.camera.y - this.bitmapBleed / 2, game.camera.width + this.bitmapBleed, game.camera.height + this.bitmapBleed);
 		var rayLength = (game.player.lightSwitch) ? game.rnd.integerInRange(-game.player.flickerAmount, game.player.LIGHT_FLICKER_BASE) : 0; //animates the light flickering, this will be used by how close you are to the monster
 		// Ray casting!

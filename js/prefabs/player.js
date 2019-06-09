@@ -164,6 +164,9 @@ Player.prototype.addToInventDisplay = function(item) {
     item.fixedToCamera = true;
     item.cameraOffset.setTo(this.camOffSet * this.inventory.length, this.camOffSet);
     item.body.checkCollision.none = true;
+    // if (this.inventoryDisplay == undefined || this.inventoryDisplay == null) {
+    //     this.inventoryDisplay = game.add.group();
+    // }
     this.inventoryDisplay.add(item);
 }
 Player.prototype.shiftInventDisplay = function(index) {
