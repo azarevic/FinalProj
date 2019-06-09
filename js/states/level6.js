@@ -1,6 +1,7 @@
 var Level6 = function (game) {
 	this.i = 0; //variable for tutorial text loop
 	this.bitmapBleed = 64; //how much bigger the bitmap is than the camera
+	this.levelNumber = 6;
 };
 Level6.prototype = {
 	create: function () {
@@ -16,6 +17,7 @@ Level6.prototype = {
 		this.decorationsLayer = this.map.createLayer('decorations');
 		this.map.setCollisionByExclusion([], true, this.wallsLayer);
 		this.wallsLayer.resizeWorld();
+		this.myStage = game.add.group();
 		this.pickUpSound = game.add.audio("pickUp");
 		console.log("Play");
 		//adding physics
@@ -41,6 +43,10 @@ Level6.prototype = {
 		//adding some walls to test ray tracing
 		this.walls = game.add.group();
 		this.walls.enableBody = true;
+
+		this.warps = game.add.group();
+		this.warps.enableBody = true;
+
 		
 		this.coffinI = game.add.sprite(128, 1344, 'coffinI');
 		game.physics.enable(this.coffinI);
@@ -109,6 +115,8 @@ Level6.prototype = {
 		// game.add.existing(game.player);
 		//the camera follows the player object
 		game.camera.follow(game.player, 0, 0.5, 0.5);
+				//this.addNotes();
+		this.addWarpZones();
 
 		//adding blend mode to bitmap (requires webgl on the browser)
 		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
@@ -128,6 +136,7 @@ Level6.prototype = {
 		game.physics.arcade.collide(game.player, this.walls);
 		game.physics.arcade.collide(game.player, this.wallsLayer);
 		game.physics.arcade.collide(game.player, this.locks);
+		game.physics.arcade.collide(game.player, this.warps);
 		game.physics.arcade.overlap(game.player, this.keys, this.collectItem, null, this);
 		
 		game.physics.arcade.overlap(game.player, this.coffinI, this.touchedCoffinI, null, this);
@@ -364,4 +373,23 @@ Level6.prototype = {
 			}
 		}, this);
 	},
+		addWarpZones: function () {
+		var obj;
+		console.log("Adding warps: ");
+
+		for (let i = 0; i < warpZones[this.levelNumber].length; i++) {
+			for (let j = 0; j < warpZones[this.levelNumber][i].length; j += 3) {
+
+				obj = new warpZone(game, "warp",
+					warpZones[this.levelNumber][i][j].x,
+					warpZones[this.levelNumber][i][j].y,
+					warpZones[this.levelNumber][i][j + 1].x,
+					warpZones[this.levelNumber][i][j + 1].y,
+					warpZones[this.levelNumber][i][j + 2], game.player);
+
+				game.add.existing(obj);
+				this.warps.add(obj);
+			}
+		}
+	}
 };
