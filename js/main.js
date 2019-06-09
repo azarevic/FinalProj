@@ -110,7 +110,7 @@ var warpZones = [
 	[
 		[new Phaser.Point(640, 2112), new Phaser.Point(864, -670), "Level2"],
 		[new Phaser.Point(1600, 1472), new Phaser.Point(96, -264), "Level5"],
-		[new Phaser.Point(256, 576), new Phaser.Point(152, 1400), "Level7"],
+		[new Phaser.Point(256, 576), new Phaser.Point(64, 1280), "Level7"],
 		[new Phaser.Point(1728, 608), new Phaser.Point(992, 1568), "Level4"]
 	],
 	//level4
@@ -119,15 +119,23 @@ var warpZones = [
 	],
 	//level5
 	[
-		[new Phaser.Point(192, 0), new Phaser.Point(1632, 1432), "Level3"],
+		[new Phaser.Point(192, 0), new Phaser.Point(1632, 1432), "Level3"]
 		
 	],
 	//level6
-	[],
+	[
+		[new Phaser.Point(768, 32), new Phaser.Point(736, 1468), "Level2"]
+	],
 	//level7
 	[
 		[new Phaser.Point(128, 1430), new Phaser.Point(256, 720), "Level3"],
+		[new Phaser.Point(128, 640), new Phaser.Point(288, 736), "Level8"],
+		[new Phaser.Point(256, 640), new Phaser.Point(1248, 1600), "Level8"]
 	],
 	//level8
-	[]
+	[
+		[new Phaser.Point(352, 864), new Phaser.Point(192, 800), "Level7"],
+		[new Phaser.Point(1312, 1632), new Phaser.Point(224, 864), "Level7"]
+	]
 ];
+
