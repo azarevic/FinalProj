@@ -89,6 +89,23 @@ var objs = [
 // 	2, "key", new Phaser.Point(360, 256), //new Phaser.Point(292, 1520),
 // 	0, "door", new Phaser.Point(832, 121),
 // 	3, "key", new Phaser.Point(1312, 448)									//placeHolder for a droped key
+// 	 0, "door", new Phaser.Point(1728, 736),                         //Level3
+//  	4, "key", new Phaser.Point(96, 1856),							//Level3
+//  	0, "door", New Phaser.Point(128, 1344), 						//Level4
+//  	5, "key", New Phaser.Point(1024, 1408), 						//Level5
+//  	0, "door", New Phaser.Point(256, 736), 							//Level3
+//	6, "key", New Phaser.Point(160, 864),    						//Level4
+//  	0, "door", New Phaser.Point(288, 512),							//Level1
+//  	7, "key", New Phaser.Point(2112, 864),							//Level7
+//  	0, "door" New Phaser.Point(128, 736),							//Level7
+//  	8, "key"  New Phaser.Point(1056, 1024),							//Level6
+//  	0, "door" New Phaser.Point(128, 1376),  						//Level7
+//  	9, "key" New Phaser.Point(384, 384), 							//Level8
+//  	0, "door2" New Phaser.Point(32, 1056),  						//Level3
+//  	10, "cross" New Phaser.Point(1120, 1344), 						//Level4
+//  	10, "cross" New Phaser.Point(736, 1472), 						//Level6
+//  	10, "cross" New Phaser.Point(160, 544), 						//Level8
+//  	10, "cross" New Phaser.Point(1088, 1184)						//Level8
 // ];
 var notes = [
 	new Phaser.Point(128, 1500), "hell o"
