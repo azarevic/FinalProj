@@ -113,7 +113,7 @@ Play.prototype = {
 		game.physics.arcade.collide(game.player, this.locks);
 		game.physics.arcade.collide(game.player, this.warps);
 		game.physics.arcade.overlap(game.player, this.keys, this.collectItem, null, this);
-		game.physics.arcade.collide(game.player, this.door4);
+		//game.physics.arcade.collide(game.player, this.door4);
 
 		if(key4 === false){
 			//this.door4.body.immovable = true;
