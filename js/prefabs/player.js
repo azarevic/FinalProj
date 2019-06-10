@@ -1,19 +1,26 @@
 //Player prefab
 
-function Player(game, key, monster) {
-    Phaser.Sprite.call(this, game, 96, 1448, key);
+function Player(game, key) {
+    Phaser.Sprite.call(this, game, 160, 1120, 'playspr', key);
 
     //properties
     game.physics.enable(this);
+    this.scale.x = 0.035;
+    this.scale.y = 0.035;
     this.body.allowGravity = false;
     this.body.collideWorldBounds = true;
     this.anchor.setTo(0.5, 0.5);
-
-    //for self containing
+    this.name = "player";
     //movement
     this.MAX_VELOCITY = 300;
     this.input = game.input;
     this.cursors = this.input.keyboard.createCursorKeys();
+    //animations
+    this.animations.add('left', ['p3'], 10, true, false);
+    this.animations.add('right', ['p2'], 10, true, false);
+    this.animations.add('up', ['p4'], 10, true, false);
+    this.animations.add('down', ['p1', 'p5'], 500, true, false);
+    this.animations.add('still', ['p1'], 10, true, false);
     //light
     this.lightSwitch = true;
     this.MAX_LIGHT_RANGE = 200;
@@ -25,9 +32,18 @@ function Player(game, key, monster) {
     this.inHearingRange = false;
     //music
     this.chaseSong = game.add.audio("chase");
+    this.pickUpSound = game.add.audio("pickUp");
     this.fading = true;
     //monster activation
-    this.monster = monster;
+    this.monster;
+    //inventory
+    this.inventory = [];
+    this.inventoryDisplay = game.add.group();
+    this.camOffSet = 32;
+
+    //this.spawnPoint;
+
+    //console.log(this);
 }
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor = Player;
@@ -37,11 +53,14 @@ Player.prototype.update = function () {
 }
 Player.prototype.move = function () {
     //move x axis
+    this.animations.play('still');
     if (this.cursors.right.isDown) {
         this.body.velocity.x = this.MAX_VELOCITY;
+        this.animations.play('right');
     }
     else if (this.cursors.left.isDown) {
         this.body.velocity.x = -this.MAX_VELOCITY;
+        this.animations.play('left');
     }
     else {
         this.body.velocity.x = 0;
@@ -49,9 +68,11 @@ Player.prototype.move = function () {
     //moving y axis
     if (this.cursors.up.isDown) {
         this.body.velocity.y = -this.MAX_VELOCITY;
+        this.animations.play('up');
     }
     else if (this.cursors.down.isDown) {
         this.body.velocity.y = this.MAX_VELOCITY;
+        this.animations.play('down');
     }
     else {
         this.body.velocity.y = 0;
@@ -62,10 +83,14 @@ Player.prototype.checkLight = function () {
         this.lightSwitch = (this.lightSwitch == true) ? false : true;
         if (this.lightSwitch) {
             this.lightRange = 200;
+            lightening = true;
+            this.tint = 0xffffff;
             console.log("switched to 200");
         }
         else {
             this.lightRange = 0;
+            lightening = false;
+            this.tint = 0x000000;
             console.log("switched to 0");
         }
     }
@@ -125,4 +150,39 @@ Player.prototype.fadeChaseSong = function() {
         this.chaseSong.fadeOut(1000);
         this.fading = true;
     }
+}
+Player.prototype.pickUpItem = function(item) {
+    console.log("Item collected: " + item.name);
+    this.inventory.push(item.id);
+    if (this.inventory.length > 1) {
+        this.inventory.sort(function(a, b){return a - b});
+    }
+    this.pickUpSound.play('', 0, 0.8, false, false);
+    this.addToInventDisplay(item);
+}
+Player.prototype.addToInventDisplay = function(item) {
+    item.fixedToCamera = true;
+    item.cameraOffset.setTo(this.camOffSet * this.inventory.length, this.camOffSet);
+    item.body.checkCollision.none = true;
+    // if (this.inventoryDisplay == undefined || this.inventoryDisplay == null) {
+    //     this.inventoryDisplay = game.add.group();
+    // }
+    this.inventoryDisplay.add(item);
+}
+Player.prototype.shiftInventDisplay = function(index) {
+    var count = 0;
+    this.inventoryDisplay.forEachAlive(function (item) {
+        if (count == index) {
+            item.cameraOffset.setTo(item.position.x - this.camOffSet, this.camOffSet);
+        }
+        count++;
+    }, this);
+}
+Player.prototype.displayInventory = function () {
+    for (let i = 0; i < this.inventory.length; i++) {
+        console.log("	" + this.inventory[i]);
+    }
+}
+Player.prototype.setMonster = function(monster) {
+    this.monster = monster;
 }

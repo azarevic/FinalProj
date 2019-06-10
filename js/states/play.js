@@ -1,19 +1,27 @@
 //Play state
 
 var Play = function (game) {
-	this.bitmapBleed = 32; //how much bigger the bitmap is than the camera
-	// this.LIGHT_FLICKER_BASE = 3;
-	// this.flickerAmount = this.LIGHT_FLICKER_BASE;
+	this.i = 0; //variable for tutorial text loop
+	this.bitmapBleed = 64; //how much bigger the bitmap is than the camera
+	this.levelNumber = 1;
 };
 Play.prototype = {
 	create: function () {
+		console.log("level: " + this.levelNumber);
+		//stop music
+		this.sound.stopAll();
+		this.words = '' + this.words;//dialog/tutorial
 		//map
-		this.map = game.add.tilemap('level');
-		this.map.addTilesetImage('trialSprites', 'tilesheet');
+		this.map = game.add.tilemap('level1');
+		this.map.addTilesetImage('tileset1', 'tilesheet1');
+		this.map.addTilesetImage('decorations', 'tilesheet2');
 		this.floorLayer = this.map.createLayer('ground');
 		this.wallsLayer = this.map.createLayer('walls');
+		this.decorationsLayer = this.map.createLayer('decorations');
 		this.map.setCollisionByExclusion([], true, this.wallsLayer);
 		this.wallsLayer.resizeWorld();
+
+		this.myStage = game.add.group();
 
 		console.log("Play");
 		//adding physics
@@ -22,60 +30,35 @@ Play.prototype = {
 		//changin background color
 		game.stage.backgroundColor = "#000000";
 
-		//adding a group for wthe objs the player can hear
-		this.noisies = game.add.group();
-		this.noisies.enableBody = true;
+		//adding a group for the objs the game.player can hear
+		this.noiseMakers = game.add.group();
+		this.noiseMakers.enableBody = true;
+		//group for solid objects
+		this.keys = game.add.group();
+		this.keys.enableBody = true;
+		this.locks = game.add.group();
+		this.locks.enableBody = true;
+
+		this.door4 = game.add.sprite(288, 512, 'door');
+		game.physics.enable(this.door4);
+		this.door4.body.immovable = true;
+		this.door4.body.allowGravity = false;
+		this.addObjects();
+		//add Notes
+		this.notes = game.add.group();
+		this.notes.enableBody = true;
+		//add warpZones
+		this.warps = game.add.group();
+		this.warps.enableBody = true;
+
 		// add enemy
 		this.monster = new Enemy(game, "p1");
 		game.add.existing(this.monster);
-
-		this.noisies.add(this.monster);
-
-		//adding player
-		this.player = new Player(game, "p1", this.monster);
-		game.add.existing(this.player);
+		this.noiseMakers.add(this.monster);
 
 		//adding some walls to test ray tracing
 		this.walls = game.add.group();
 		this.walls.enableBody = true;
-		// var i, x, y, tmp;
-		// for (i = 0; i < 4; i++) {
-		// 	x = i * game.width / 4 + 50;
-		// 	y = game.rnd.integerInRange(50, game.height - 200);
-		// 	tmp = this.walls.create(x, y, "p1");
-		// 	tmp.scale.setTo(3, 3);
-		// 	tmp.body.immovable = true;
-		// 	tmp.tint = 0x000000;
-		// }
-
-		//the camera follows the player object
-		game.camera.follow(this.player, 0, 0.5, 0.5);
-		//gives enables physics on jewels, keys, doors, and statue
-		blueEye = game.add.sprite(1480, 1150, 'blueEye');
-		game.physics.enable(blueEye);
-		blueEye.enableBody = true;
-		yellowEye = game.add.sprite(250, 950, 'yellowEye');
-		game.physics.enable(yellowEye);
-		yellowEye.enableBody = true;
-		key1 = game.add.sprite(1312, 448, 'key');
-		game.physics.enable(key1);
-		key1.enableBody = true;
-		key2 = game.add.sprite(360, 256, 'key');
-		game.physics.enable(key2);
-		key2.enableBody = true;
-		statue = game.add.sprite(1312, 448, 'statue');
-		game.physics.enable(statue);
-		statue.enableBody = true;
-		statue.body.immovable = true;
-		statue.scale.setTo(1.5, 1);
-		door1 = game.add.sprite(416, 1248, 'door');
-		game.physics.enable(door1);
-		door1.enableBody = true;
-		door1.body.immovable = true;
-		door2 = game.add.sprite(832, 128, 'door');
-		game.physics.enable(door2);
-		door2.enableBody = true;
-		door2.body.immovable = true;
 
 		//Create a bitmap texture for drawing light cones
 		//this should go at the bottom to cover all srpites 
@@ -87,82 +70,84 @@ Play.prototype = {
 
 		//adding blend mode to bitmap (requires webgl on the browser)
 		lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
-	},
-	collectkey1: function () {
-		//console.log('key 1 taken')
-		keys1 = true;
-		key1.destroy();
-		//console.log('itll say true if you got the thing ' + blueJewel);
-	},
-	collectkey2: function () {
-		//console.log('key 2 taken')
-		keys2 = true;
-		key2.destroy();
-		//console.log('itll say true if you got the thing ' + blueJewel);
-	},
-	collectBlueEye: function () {
-		//console.log('they overlap')
-		blueJewel = true;
-		blueEye.destroy();
-		//console.log('itll say true if you got the thing ' + blueJewel);
-	},
-	collectYellowEye: function () {
-		//console.log('they overlap')
-		yellowJewel = true;
-		yellowEye.destroy();
+
+		//adding player
+		if (!game.player.parent)
+        {
+			this.add.existing(game.player);
+			console.log(game.player);
+		}
+		game.player.setMonster(this.monster);
+		this.players = game.add.group();
+		this.players.add(game.player);
+		this.players.add(game.player.inventoryDisplay);
+		//game.player = new Player(game, "p1");
+		// game.player = player;
+		// console.log(this.p)
+		// game.player.setMonster(this.monster);
+		// game.add.existing(game.player);
+		// this.game.playerGroup = game.add.group();
+		// this.game.playerGroup.add(game.player);
+
+		this.addNotes();
+		this.addWarpZones();
+		//the camera follows the game.player object
+		game.camera.follow(game.player, 0, 0.5, 0.5);
+
+		//this.showNarration();//shows dialog/information/tutorial
 	},
 	update: function () {
-		this.player.listen(this.noisies);
+		// game.player.move();
+		// game.player.checkLight();
+		game.player.listen(this.noiseMakers);
 		this.rayCast();
-		game.physics.arcade.overlap(this.player, this.monster, this.colPE, null, this);
-		game.physics.arcade.collide(this.player, this.walls);
+		game.physics.arcade.overlap(game.player, this.monster, this.colPE, null, this);
 		//map
-		game.physics.arcade.collide(this.player, this.mapLayer);
+		game.physics.arcade.collide(game.player, this.mapLayer);
+		//This text updates with dialog and information
+		//this.conversationText.text = this.words;
 
 		//map & object collision
-		game.physics.arcade.collide(this.player, this.wallsLayer);
-		//stops player from going trhough doors and statue
-		game.physics.arcade.collide(this.player, statue);
-		game.physics.arcade.collide(this.player, door1);
-		game.physics.arcade.collide(this.player, door2);
-		//picks up jewels or keys if player overlaps
-		game.physics.arcade.overlap(this.player, blueEye, this.collectBlueEye, null, this);
-		game.physics.arcade.overlap(this.player, yellowEye, this.collectYellowEye, null, this);
-		game.physics.arcade.overlap(this.player, key1, this.collectkey1, null, this);
-		game.physics.arcade.overlap(this.player, key2, this.collectkey2, null, this);
-		//if player have the keys or jewels, it opens doors and destroys statue
-		if (keys2 == true && this.player.x > door1.x && this.player.y > door1.y) {
-			door1.destroy();
-		}
-		if (keys1 == true && this.player.x > door2.x && this.player.x < (door2.x + 100) && this.player.y > door2.y) {
-			door2.destroy();
-		}
+		game.physics.arcade.collide(game.player, this.walls);
+		game.physics.arcade.collide(game.player, this.wallsLayer);
+		game.physics.arcade.collide(game.player, this.locks);
+		game.physics.arcade.collide(game.player, this.warps);
+		game.physics.arcade.overlap(game.player, this.keys, this.collectItem, null, this);
+		//game.physics.arcade.collide(game.player, this.door4);
 
-		if (yellowJewel == true && this.player.x > 1248 && this.player.x < 1344 && this.player.y > 448 && this.player.y < 480) {
-			statue.destroy();
-		}
+		if(key4 === false){
+			//this.door4.body.immovable = true;
+			game.physics.arcade.collide(game.player, this.door4);
+		} 
+		game.physics.arcade.overlap(game.player, this.door4, this.openDoor, null, this);
+		
+		//game.physics.arcade.overlap(game.player, this.warps, this.warp, null, this);
+
+		//this.introDialogue();//this calls the method that displays the tutorial
+	},
+	openDoor: function (player, door) {
+		door.destroy();
 	},
 	colPE: function (player, enemy) {
 		player.kill();
 		enemy.kill();
 		this.monster.sound[0].stop();
 		this.monster.sound[1].stop();
-		this.spawnMonsterTimer.stop();
 		game.state.start("GameOver");
 	},
 	//adapted from: https://gamemechanicexplorer.com/#raycasting-2
 	rayCast: function () {
 		//fill the entire light bitmap with a dark shadow color.
-		this.bitmap.context.fillStyle = 'rgb(0, 0, 0)';
-		this.bitmap.context.fillRect(game.camera.x, game.camera.y, game.camera.width + this.bitmapBleed, game.camera.height + this.bitmapBleed);
-		var rayLength = (this.player.lightSwitch)? game.rnd.integerInRange(-this.player.flickerAmount, this.player.LIGHT_FLICKER_BASE) : 0; //animates the light flickering, this will be used by how close you are to the monster
+		this.bitmap.context.fillStyle = 'rgb(255, 255, 255)';//'rgb(0, 0, 0)';//'rgb(255, 255, 255)';
+		this.bitmap.context.fillRect(game.camera.x - this.bitmapBleed / 2, game.camera.y - this.bitmapBleed / 2, game.camera.width + this.bitmapBleed, game.camera.height + this.bitmapBleed);
+		var rayLength = (game.player.lightSwitch) ? game.rnd.integerInRange(-game.player.flickerAmount, game.player.LIGHT_FLICKER_BASE) : 0; //animates the light flickering, this will be used by how close you are to the monster
 		// Ray casting!
 		// Cast rays at intervals in a large circle around the light.
 		// Save all of the intersection points or ray end points if there was no intersection.
 		var points = [];
 		for (var a = 0; a < Math.PI * 2; a += Math.PI / 360) {
-			var ray = new Phaser.Line(this.player.x, this.player.y,
-				this.player.x + Math.cos(a) * this.player.lightRange, this.player.y + Math.sin(a) * this.player.lightRange);//last 2 parameters indicate length
+			var ray = new Phaser.Line(game.player.x, game.player.y,
+				game.player.x + Math.cos(a) * game.player.lightRange, game.player.y + Math.sin(a) * game.player.lightRange);//last 2 parameters indicate length
 
 			// Check if the ray intersected any walls
 			var intersect = this.getWallIntersection(ray);
@@ -176,8 +161,8 @@ Play.prototype = {
 		}
 		// Draw circle of light with a soft edge
 		var gradient = this.bitmap.context.createRadialGradient(
-			this.player.x, this.player.y, this.player.lightRange * 0.75 + rayLength,
-			this.player.x, this.player.y, this.player.lightRange + rayLength);
+			game.player.x, game.player.y, game.player.lightRange * 0.75 + rayLength,
+			game.player.x, game.player.y, game.player.lightRange + rayLength);
 		gradient.addColorStop(0, 'rgba(255, 225, 200, 1.0)');
 		gradient.addColorStop(1, 'rgba(255, 225, 200, 0.0)');
 		// Connect the dots and fill in the shape, which are cones of light,
@@ -233,4 +218,114 @@ Play.prototype = {
 		}, this);
 		return closestIntersection;
 	},
+	addObjects: function () {
+		var j, i;
+		var obj;
+		for (i = 0, j = -1; i < objs.length; i += 3) {
+			if (objs[i] == 0) {
+				obj = new lock(game, objs[i + 1], objs[i + 2].x, objs[i + 2].y);
+				game.add.existing(obj);
+				this.locks.add(obj);
+				j++;
+			}
+			else {
+				if (this.locks.children[j] != undefined) {
+					obj = new key(game, objs[i + 1], objs[i + 2].x, objs[i + 2].y, objs[i]);
+					game.add.existing(obj);
+					this.keys.add(obj);
+					this.locks.getChildAt(j).addId(objs[i]);
+				}
+				else {
+					console.log("OBJS ARRAY ERROR: an undefined lock found");
+				}
+			}
+		}
+	},
+	showNarration: function () {
+		//this function shows the tutorial and other information text  
+		var text = '0';
+		style = { font: '40px Almendra', fill: '#fff', align: 'center' };
+		this.conversationText = this.game.add.text(120, 510, text, style);
+		this.conversationText.fixedToCamera = true;
+	},
+	introDialogue: function () {
+		//tutorial text, this adds the text
+		var wordsArray = new Array();
+		wordsArray[0] = "Use arrow keys to move\nPress [D] to continue";
+		wordsArray[1] = "Press [F] to turn on/off the lights\nPress [D] to continue";
+		wordsArray[2] = "";
+		wordsArray[3] = "";
+
+		if (this.i < 3 && game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
+			this.i++;
+
+		}
+		this.words = wordsArray[this.i];
+	},
+	collectItem: function (player, item) {
+		player.pickUpItem(item);
+		player.displayInventory();
+	},
+	// warp: function (game.player, warpZone) {
+	// 	console.log("repos!!!!");
+	// 	warpZone.reposgame.player();
+
+	// 	// this.myStage.forEachAlive(function (item) {
+	// 	// 	//console.log(item);
+	// 	// 	for (let i = 0; i < item.ids.length; i++) {
+	// 	// 		item.destroy();	
+	// 	// 	}
+	// 	// }, this);
+	// 	//map
+	// 	this.map = game.add.tilemap('level1');
+	// 	this.map.addTilesetImage('tileset1', 'tilesheet1');
+	// 	this.map.addTilesetImage('decorations', 'tilesheet2');
+	// 	this.floorLayer = this.map.createLayer('ground');
+	// 	this.wallsLayer = this.map.createLayer('walls');
+	// 	this.decorationsLayer = this.map.createLayer('decorations');
+	// 	this.map.setCollisionByExclusion([], true, this.wallsLayer);
+	// 	this.wallsLayer.resizeWorld();
+
+	// 	// this.myStage.add(this.map);
+	// 	// this.myStage.add(this.floorLayer);
+	// 	// this.myStage.add(this.wallsLayer);
+	// 	// this.myStage.add(this.decorationsLayer);
+	// },
+	displayKeysNeeded: function (group) {
+		group.forEachAlive(function (item) {
+			console.log(item);
+			for (let i = 0; i < item.ids.length; i++) {
+				console.log("	" + item.ids[i]);
+			}
+		}, this);
+	},
+	addNotes: function () {
+		var obj;
+
+		for (let i = 0; i < notes.length; i += 2) {
+			console.log(notes[i]);
+			obj = new note(game, "note", notes[i].x, notes[i].y, notes[i + 1], game.player);
+			game.add.existing(obj);
+			this.notes.add(obj);
+		}
+	},
+	addWarpZones: function () {
+		var obj;
+		console.log("Adding warps: ");
+
+		for (let i = 0; i < warpZones[this.levelNumber].length; i++) {
+			for (let j = 0; j < warpZones[this.levelNumber][i].length; j += 3) {
+
+				obj = new warpZone(game, "warp",
+					warpZones[this.levelNumber][i][j].x,
+					warpZones[this.levelNumber][i][j].y,
+					warpZones[this.levelNumber][i][j + 1].x,
+					warpZones[this.levelNumber][i][j + 1].y,
+					warpZones[this.levelNumber][i][j + 2], game.player);
+
+				game.add.existing(obj);
+				this.warps.add(obj);
+			}
+		}
+	}
 };

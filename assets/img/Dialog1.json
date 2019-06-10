@@ -1,0 +1,129 @@
+[
+	[
+		{
+			"speaker" : "thou",
+			"dialog" : "Father, please forbear it, forbear me, please, it hurts, forbear doing that, please forbear, I am begging thou.",
+			"newSpeaker" : "true"
+		},
+		{
+			"speaker" : "father",
+			"dialog" : "Keep quiet, dun's the mouse! or thy mother shall hark, and thou wot what shall befall would she discovers us doing this.",
+			"newSpeaker" : "true"
+		},
+		{	
+			"speaker" : "thou",
+			"dialog" : "please father, I canst not doth this anymore, forbear doing that to me, please forbear me, please, that is all I do lack, just let hie of me and I shall ne'r say to mine mother."
+		},
+		{	
+			"speaker" : "father",
+			"dialog" : "this is the price thou might not but pay to live, thou and thy mother are bootless, thou are whoreson without me, and I ne'r let thou hie, I canst not let thou say to anyone else about this."
+		},
+		{	
+			"speaker" : "mother",
+			"dialog" : "what is happening? what is thy purpose to mine child, forbear mine child, thou fucking bastard!",
+			"newSpeaker" : "true"
+		},
+		{	
+			"speaker" : "father",
+			"dialog" : "what the fuck didst thou just call me? soft, dun's the mouse."
+		}
+	],
+	[
+		{
+			"speaker" : "mother",
+			"dialog" : "I shall inform the authorities. "
+		},
+		{
+			"speaker" : "father",
+			"dialog" : "get back hither, I demand thee to keep hither."
+		},
+		{	
+			"speaker" : "mother",
+			"dialog" : "I canst not let thou get aroint, there is no way I let myself live knowing this befell."
+		},
+		{	
+			"speaker" : "father",
+			"dialog" : "I am demanding thee to keep quiet!"
+		},
+		{	
+			"speaker" : "mother",
+			"dialog" : "calm down please, please calm down, put that aroint, we want never to try this please, our child is right 'I front of us, please put that aroint.  Ahhhhhhhh!!!"
+		},
+		{	
+			"speaker" : "thou",
+			"dialog" : "mother! please, mommy, wake up, wake up mommy, please… never leave me, please mommy, I love thou, please mother, keep."
+		}
+	],
+	[
+		{
+			"speaker" : "father",
+			"dialog" : "if thou never obey me, that shall befall thee."
+		},
+		{
+			"speaker" : "thou",
+			"dialog" : "thou shall pay for this."
+		},
+		{	
+			"speaker" : "father",
+			"dialog" : "what is thy purpose with that thing? put that thing aroint right now!!!"
+		},
+		{	
+			"speaker" : "narrator",
+			"dialog" : "the child whom hath surprised their issue was taken to the temple orphanage, all's seemed normal, till one day, a group bid XXXVI COETUS came, all's changed",
+			"newSpeaker" : "true"
+		},
+		{	
+			"speaker" : "narrator",
+			"dialog" : "As an orphan, the cult XXXVI Coetus  kidnapp'd the child, those gents did want to useth the lighteth yond cometh from the innocence of the child’s soul and off'r t to their god, hoping yond wouldst endeth the et'rnal night yond t'rments their village, and bringeth backeth the daylight and happiness."
+		},
+		{	
+			"speaker" : "narrator",
+			"dialog" : "Unf'rtunately, ev'rything wenteth h'rribly wrong, and those gents all kicked the bucket, howev'r the child did survive."
+		},
+		{	
+			"speaker" : "narrator",
+			"dialog" : "Hey, wake up!"
+		},
+		{	
+			"speaker" : "narrator",
+			"dialog" : "XXXVI Coetus hath taken over here, they attempted to use this temple to manifest their god to this earth, they dispatch everyone yet thou alone remain, you stand here alone, all alone, with nobody by thy side and the only company you keep is the thoughts residing in thy mind."
+		},
+		{	
+			"speaker" : "exspiravit",
+			"dialog" : "You need to get out of here as soon as possible, so listen to me and pay close attention. ",
+			"newSpeaker" : "true"
+		},
+		{	
+			"speaker" : "exspiravit",
+			"dialog" : "You need to find the keys of every door because you are going to need them, you won’t be able to discard the keys because you will need them, constantly."
+		},
+		{	
+			"speaker" : "exspiravit",
+			"dialog" : "The exit of this church is sealed by the wrath of both gods; the god from heaven and the god from hell. "
+		},
+		{	
+			"speaker" : "exspiravit",
+			"dialog" : "You will need to retrieve the four crosses and use them to open the door by the altar. "
+		},
+		{	
+			"speaker" : "exspiravit",
+			"dialog" : "Remember how I mentioned the gods, the god from heaven has already helped you by dropping cross by the map, however,"
+		},
+		{	
+			"speaker" : "exspiravit",
+			"dialog" : "You will need to ask the other god for a favor, and for that, you must find the upside-down painting, turn off your lights and just go through it"
+		},
+		{	
+			"speaker" : "exspiravit",
+			"dialog" : "You will be spawned in a different dimension, once you are there, find keys, and then you’ll get to a crypt with coffins, you will use them to contact the other god."
+		},
+		{	
+			"speaker" : "exspiravit",
+			"dialog" : "Dial the number of the beast (666); stand on a coffin, press D, wait for the bell to ring, then wait about three seconds, then go to the next coffin and repeat. If you mess up and call a higher number, it will reset back to zero. "
+		},
+		{	
+			"speaker" : "exspiravit",
+			"dialog" : "And you will be able to try again. Remember, D = 500, C = 100, L = 50; X = 10; V = 5; I = 1."
+		}
+	]
+]
